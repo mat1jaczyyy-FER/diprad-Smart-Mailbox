@@ -1,0 +1,7 @@
+/.vscode/
+/build/
+/debug.log
+/dependencies.lock
+/sdkconfig
+/sdkconfig.old
+/*.zip
