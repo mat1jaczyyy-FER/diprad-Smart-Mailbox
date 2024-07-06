@@ -24,8 +24,7 @@
 #define CONFIG_GPIO_STATUS_LED_G            GPIO_NUM_1
 #define CONFIG_GPIO_STATUS_LED_B            GPIO_NUM_10
 
-#define CONFIG_WIFI_SSID                    "mat1jaczyyy"
-#define CONFIG_WIFI_SCAN_AUTH_MODE_THRESHOLD WIFI_AUTH_WPA2_WPA3_PSK
+#define CONFIG_WIFI_MAXRETRY                3
 
 #define CONFIG_NOTIFICATION_SERVER          "api.telegram.org"
 #define CONFIG_NOTIFICATION_URL             "bot6613411665:AAGZ7HPSl2-hDrlzkZS0U_EXmaUIO8DVLd4/sendMessage?chat_id=267163277&text=You%27ve%20got%20mail!"

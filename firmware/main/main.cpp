@@ -50,6 +50,8 @@ extern "C" void app_main() {
     
     wifi_init();
     wifi_start();
+    
+    //coordinator_pull_config()
 
     ESP_LOGI("MAIN", "Simulate notif send");
 

@@ -13,7 +13,7 @@ class StatusLED {
         #endif
 
         void active();
-        void no_wifi();
+        void dpp_authentication();
         void wifi_retrying();
         void sleeping();
 

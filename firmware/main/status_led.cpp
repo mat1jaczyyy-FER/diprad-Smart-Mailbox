@@ -37,8 +37,8 @@ void StatusLED::active() {
     this->set(0, 1, 0);
 }
 
-void StatusLED::no_wifi() {
-    //ESP_LOGI(TAG, "No WiFi Available");
+void StatusLED::dpp_authentication() {
+    //ESP_LOGI(TAG, "DPP Authentication");
     this->set(0, 0, 1);
 }
 
