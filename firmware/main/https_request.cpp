@@ -15,7 +15,7 @@ static const char* base_url = "https://%s/%s";
 static const char* base_req =
     "GET %s HTTP/1.1\r\n"
     "Host: %s\r\n"
-    "User-Agent: esp-idf/1.0 esp32 smart-mailbox/0.3.0\r\n"
+    "User-Agent: esp-idf/1.0 esp32 smart-mailbox/1.0.0\r\n"
     "\r\n";
 
 int https_get_request(const char* server, const char* url, const uint8_t* cacert_start, const uint8_t* cacert_end) {
