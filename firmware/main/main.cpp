@@ -1,6 +1,7 @@
 #include "config.h"
 
 #include <freertos/FreeRTOS.h>
+#include "esp_log.h"
 
 #include "sleep.h"
 #include "wifi.h"
@@ -31,10 +32,11 @@ inline int send_notification() {
 #endif
 
 #if defined(CONFIG_USE_ULTRASOUND)
-HC_SR04 ultrasound(CONFIG_GPIO_ULTRASOUND_TRIG, CONFIG_GPIO_ULTRASOUND_ECHO);
+    HC_SR04 ultrasound(CONFIG_GPIO_ULTRASOUND_TRIG, CONFIG_GPIO_ULTRASOUND_ECHO);
 #endif
+
 #if defined(CONFIG_USE_INFRARED)
-Infrared infrared(CONFIG_GPIO_INFRARED_EN, CONFIG_ADC_INFRARED_RECV);
+    Infrared infrared(CONFIG_GPIO_INFRARED_EN, CONFIG_ADC_INFRARED_RECV);
 #endif
 
 RTC_DATA_ATTR Debouncer db;
@@ -43,16 +45,20 @@ RTC_DATA_ATTR uint8_t first_boot = 1;
 RTC_DATA_ATTR uint8_t p = 0;
 RTC_DATA_ATTR uint8_t notify = 0;
 
-#if defined(CONFIG_USE_STATUS_LED)
-StatusLED status_led(CONFIG_GPIO_STATUS_LED_R, CONFIG_GPIO_STATUS_LED_G, CONFIG_GPIO_STATUS_LED_B);
-#endif
-
 extern "C" void app_main() {
-    #if defined(CONFIG_USE_STATUS_LED)
-        status_led.booting();
-    #endif
-
+    status_led.active();
+    
     wifi_init();
+    wifi_start();
+
+    ESP_LOGI("MAIN", "Simulate notif send");
+
+    send_notification();
+
+    wifi_stop();
+
+    ESP_LOGI("MAIN", "Done");
+    while (1);
 
     if (first_boot) {
         first_boot = 0;
@@ -60,9 +66,7 @@ extern "C" void app_main() {
     }
 
     while (1) {
-        #if defined(CONFIG_USE_STATUS_LED)
-            status_led.active();
-        #endif
+        status_led.active();
 
         for (uint8_t i = 0; !notify && i < CONFIG_MAIL_DEBOUNCE_ITERATIONS * 2; i++) {
             uint8_t x = 
@@ -88,15 +92,14 @@ extern "C" void app_main() {
         }
         
         if (notify) {
-            if (wifi_start() && send_notification()) {
+            wifi_start();
+            if (send_notification()) {
                 notify = 0;
             }
             wifi_stop();
         }
         
-        #if defined(CONFIG_USE_STATUS_LED)
-            status_led.sleeping();
-        #endif
+        status_led.sleeping();
 
         deep_sleep(CONFIG_SLEEP_INTERVAL * 1000);
     }
