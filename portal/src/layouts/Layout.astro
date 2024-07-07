@@ -1,0 +1,147 @@
+---
+import env from "../utils/env";
+import { verifyToken } from "../utils/token.ts";
+
+interface Props {
+    title?: string;
+    description?: string;
+    index?: boolean;
+}
+
+const sitename = "Smart Mailbox Portal";
+const title = Astro.props.title? `${Astro.props.title} – ${sitename}` : sitename;
+const description = Astro.props.description || "Smart Mailbox Portal is a web application for managing your smart mailbox.";
+const { index } = Astro.props;
+
+const cookie = Astro.cookies.get(env.cookieName).value;
+const user = verifyToken(cookie);
+
+const redirect = function() {
+    if (!index && !user) return "/";
+    if (index && user) return "/mailboxes";
+    return null;
+}();
+
+
+---
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, interactive-widget=overlays-content">
+        <meta name="generator" content={Astro.generator} />
+        
+        <link rel="icon" type="image/svg+xml" href="/res/favicon.svg" />
+        <link rel="sitemap" href="/sitemap-index.xml" />
+        
+        <meta name="application-name" content={sitename}>
+        <meta property="og:site_name" content={sitename}>
+
+        <title>{title}</title>
+        <meta property="og:title" content={title}>
+        
+        <meta name="description" content={description}>
+        <meta property="og:description" content={description}>
+
+        <meta property="og:type" content="website">
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+
+        {redirect && <meta http-equiv="refresh" content={`0; url=${redirect}`} />}
+    </head>
+    <body>
+        {!redirect && <>
+            <div id="header" class={index? "index" : "home-link"} onclick={index? "" : `window.location='/';`}>
+                <img src="/res/logo.svg" alt="Logo">
+            </div>
+            <div id="content" class={index? "index" : ""}>
+                <slot />
+            </div>
+
+            {index && <script>
+                const updateHeaderScroll = function () {
+                    const header = document.getElementById('header');
+                    
+                    if (header)
+                        header.style.height = `calc(20rem - ${window.scrollY}px)`;
+                }
+
+                window.onscroll = updateHeaderScroll;
+                updateHeaderScroll();
+            </script>}
+        </>}
+    </body>
+</html>
+
+<style is:global>
+    html, body {
+        overscroll-behavior: none;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        background: #111e33;
+        color: #eaeafa;
+
+        font-family: "Outfit", sans-serif;
+        font-optical-sizing: auto;
+        user-select: none;
+    }
+
+    a {
+        color: #df2820;
+        text-decoration: none;
+    }
+
+    #header {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        height: 5rem;
+        min-height: 5rem;
+        background: linear-gradient(120deg, #002E63, #0062BC, #002E63);
+        z-index: 1;
+    }
+
+    #header.index {
+        height: 20rem;
+    }
+
+    #header.home-link {   
+        cursor: pointer;
+    }
+
+    #header > img {
+        display: block;
+        margin: 0 auto;
+        height: 100%;
+    }
+
+    #content {
+        padding-top: 5rem;
+        padding-bottom: 5rem;
+        margin-top: 1em;
+        width: calc(575px + 6vw);
+        max-width: 94vw;
+        margin-inline: auto;
+        text-align: center;
+    }
+
+    #content.index {
+        padding-top: 20rem;
+    }
+
+    @media print {
+        #header {
+            display: none;
+        }
+
+        #content {
+            padding-top: 1rem;
+        }
+    }
+</style>

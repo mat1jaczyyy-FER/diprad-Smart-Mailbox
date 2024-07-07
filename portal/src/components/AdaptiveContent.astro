@@ -1,0 +1,40 @@
+<div class="adaptive" {...Astro.props}>
+    <slot />
+</div>
+
+<style>
+    .adaptive {
+        font-size: calc(0.98em + 0.15vw);
+    }
+
+    .adaptive :global(h3) {
+        margin: 0;
+        font-size: 1.6em;
+        font-weight: 250;
+        opacity: 0.9;
+        text-decoration: underline;
+        text-decoration-style: dotted;
+    }
+
+    .adaptive :global(h3:not(:first-child)) {
+        padding-top: 2.8em;
+    }
+
+    .adaptive :global(h4) {
+        margin: 0;
+        padding-top: 0.7em;
+        font-size: 1.1em;
+        font-weight: 150;
+        opacity: 0.6;
+    }
+
+    .adaptive :global(ul) {
+        margin: 0;
+        padding: 0;
+        font-size: 0.85em;
+        font-weight: 300;
+        opacity: 0.85;
+        list-style-position: inside;
+        list-style-type: circle;
+    }
+</style>
