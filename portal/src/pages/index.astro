@@ -1,23 +1,83 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import env from "../utils/env";
 ---
 
 <Layout index>
-    <form action="/api/login" accept-charset="UTF-8" method="POST">
+    <form id="loginForm">
         <div>
             <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
+            <input type="text" name="username" required>
         </div>
         <div>
             <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
+            <input type="password" name="password" required>
         </div>
         <div>
             <button type="submit">Login</button>
         </div>
+        <div id="login-message"></div>
     </form>
 </Layout>
 
 <style>
     
 </style>
+
+<script define:vars={{
+    cookieName: env.cookieName,
+    maxAge: env.maxAge
+}} is:inline>
+    document.addEventListener("DOMContentLoaded", () => {
+        const form = document.getElementById('loginForm');
+        const messageDiv = document.getElementById('login-message');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const inputs = form.querySelectorAll('input, button');
+            inputs.forEach(e => e.disabled = true);
+
+            messageDiv.textContent = '';
+
+            const username = (form.querySelector('input[name="username"]')).value;
+            const password = (form.querySelector('input[name="password"]')).value;
+
+            let loggedIn = false;
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password }),
+                });
+
+                if (response.ok) {
+                    messageDiv.textContent = 'Login successful!';
+                    messageDiv.style.color = 'green';
+
+                    const token = await response.text();
+                    document.cookie = `${cookieName}=${token}; max-age=${maxAge}; path=/`;
+                    loggedIn = true;
+
+                } else {
+                    messageDiv.textContent = 'Invalid credentials. Please try again.';
+                    messageDiv.style.color = 'red';
+                }
+
+            } catch (error) {
+                messageDiv.textContent = 'An error occurred. Please try again.';
+                messageDiv.style.color = 'red';
+
+            } finally {
+                if (loggedIn) {
+                    setTimeout(() => { window.location = '/'; }, 1000);
+                } else {
+                    inputs.forEach(e => e.disabled = false);
+                }
+            }
+        });
+    });
+</script>

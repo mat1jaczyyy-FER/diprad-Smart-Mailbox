@@ -13,7 +13,7 @@ const title = Astro.props.title? `${Astro.props.title} – ${sitename}` : sitena
 const description = Astro.props.description || "Smart Mailbox Portal is a web application for managing your smart mailbox.";
 const { index } = Astro.props;
 
-const cookie = Astro.cookies.get(env.cookieName).value;
+const cookie = Astro.cookies.get(env.cookieName)?.value;
 const user = verifyToken(cookie);
 
 const redirect = function() {
