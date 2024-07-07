@@ -125,8 +125,6 @@ void wifi_init() {
         IP_EVENT, IP_EVENT_STA_GOT_IP, &ip_event_handler, NULL
     ));
 
-    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
-
     ESP_ERROR_CHECK(esp_supp_dpp_init(dpp_enrollee_event_cb));
     ESP_ERROR_CHECK(esp_supp_dpp_bootstrap_gen(
         DPP_LISTEN_CHANNEL_LIST,
@@ -153,6 +151,8 @@ void wifi_start(bool force_dpp) {
     if (force_dpp) {
         wifi_config.sta.ssid[0] = '\0';
     }
+
+    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
 
     retries = 0;
     ESP_ERROR_CHECK(esp_wifi_start());

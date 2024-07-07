@@ -53,14 +53,14 @@ extern "C" void app_main() {
     
     //coordinator_pull_config()
 
-    ESP_LOGI("MAIN", "Simulate notif send");
+    //ESP_LOGI("MAIN", "Simulate notif send");
 
-    send_notification();
+    //send_notification();
 
     wifi_stop();
 
-    ESP_LOGI("MAIN", "Done");
-    while (1);
+    //ESP_LOGI("MAIN", "Done");
+    //while (1);
 
     if (first_boot) {
         first_boot = 0;
