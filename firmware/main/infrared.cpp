@@ -5,8 +5,8 @@
 
 static const char* TAG = "Infrared";
 
-#if defined(CONFIG_USE_INFRARED) && !defined(CONFIG_MAIL_INFRARED_EMPTY_FROM) && !defined(CONFIG_MAIL_INFRARED_EMPTY_TO)
-    #error "At least one of CONFIG_MAIL_INFRARED_EMPTY_FROM or CONFIG_MAIL_INFRARED_EMPTY_TO must be defined"
+#if !defined(CONFIG_MAIL_EMPTY_FROM) || !defined(CONFIG_MAIL_EMPTY_TO)
+    #error "CONFIG_MAIL_EMPTY_FROM and CONFIG_MAIL_EMPTY_TO must be defined"
 #endif
 
 Infrared::Infrared(gpio_num_t _en, adc1_channel_t _recv) {
@@ -32,17 +32,5 @@ uint8_t Infrared::measure() {
 
     ESP_LOGI(TAG, "%u mV", result);
 
-    return !(
-        #if defined(CONFIG_MAIL_INFRARED_EMPTY_FROM)
-            CONFIG_MAIL_INFRARED_EMPTY_FROM <= result
-
-            #if defined(CONFIG_MAIL_INFRARED_EMPTY_TO)
-                &&
-            #endif
-        #endif
-
-        #if defined(CONFIG_MAIL_INFRARED_EMPTY_TO)
-            result <= CONFIG_MAIL_INFRARED_EMPTY_TO
-        #endif
-    );
+    return !(CONFIG_MAIL_EMPTY_FROM <= result && result <= CONFIG_MAIL_EMPTY_TO);
 }
