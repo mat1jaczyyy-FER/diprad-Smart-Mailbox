@@ -27,16 +27,19 @@ inline int send_notification() {
     );
 }
 
-#if !defined(CONFIG_USE_ULTRASOUND) && !defined(CONFIG_USE_INFRARED)
-    #error "At least one of CONFIG_USE_ULTRASOUND or CONFIG_USE_INFRARED must be defined"
+#if (!defined(CONFIG_USE_ULTRASONIC) && !defined(CONFIG_USE_INFRARED)) || \
+    (defined(CONFIG_USE_ULTRASONIC) && defined(CONFIG_USE_INFRARED))
+    #error "Only of CONFIG_USE_ULTRASONIC or CONFIG_USE_INFRARED must be defined"
 #endif
 
-#if defined(CONFIG_USE_ULTRASOUND)
-    HC_SR04 ultrasound(CONFIG_GPIO_ULTRASOUND_TRIG, CONFIG_GPIO_ULTRASOUND_ECHO);
+#if defined(CONFIG_USE_ULTRASONIC)
+    HC_SR04 sensor(CONFIG_GPIO_ULTRASONIC_TRIG, CONFIG_GPIO_ULTRASONIC_ECHO);
+#elif defined(CONFIG_USE_INFRARED)
+    Infrared sensor(CONFIG_GPIO_INFRARED_EN, CONFIG_ADC_INFRARED_RECV);
 #endif
 
-#if defined(CONFIG_USE_INFRARED)
-    Infrared infrared(CONFIG_GPIO_INFRARED_EN, CONFIG_ADC_INFRARED_RECV);
+#if !(defined(CONFIG_MAIL_EMPTY_FROM) && defined(CONFIG_MAIL_EMPTY_TO))
+    #error "CONFIG_MAIL_EMPTY_FROM and CONFIG_MAIL_EMPTY_TO must be defined"
 #endif
 
 RTC_DATA_ATTR Debouncer db;
@@ -71,19 +74,7 @@ extern "C" void app_main() {
         status_led.active();
 
         for (uint8_t i = 0; !notify && i < CONFIG_MAIL_DEBOUNCE_ITERATIONS * 2; i++) {
-            uint8_t x = 
-                #if defined(CONFIG_USE_ULTRASOUND)
-                    ultrasound.measure()
-
-                    #if defined(CONFIG_USE_INFRARED)
-                        ||
-                    #endif
-                #endif
-                
-                #if defined(CONFIG_USE_INFRARED)
-                    infrared.measure()
-                #endif
-            ;
+            uint8_t x = sensor.measure();
 
             x = debouncer_tick(&db, x);
 
