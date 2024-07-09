@@ -3,6 +3,7 @@
 
 #include <freertos/FreeRTOS.h>
 
-int https_get_request(const char* server, const char* url, const uint8_t* cacert_start, const uint8_t* cacert_end);
+bool https_get_request(const char* server, const char* url, char** res, const uint8_t* cacert_start, const uint8_t* cacert_end);
+bool https_post_request(const char* server, const char* url, const char* body, char** res, const uint8_t* cacert_start, const uint8_t* cacert_end);
 
 #endif

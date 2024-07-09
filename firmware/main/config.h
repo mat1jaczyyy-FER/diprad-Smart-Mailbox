@@ -1,6 +1,9 @@
 #ifndef _CONFIG_h
 #define _CONFIG_h
 
+#define CONFIG_MAILBOX_PUBLIC_CODE          "CXIGJ5A"
+#define CONFIG_MAILBOX_PRIVATE_CODE         "WTCO7D1"
+
 #define CONFIG_SLEEP_INTERVAL               0
 #define CONFIG_SLEEP_MAXLEVEL               0
 
@@ -28,7 +31,7 @@
 
 #define CONFIG_WIFI_MAXRETRY                3
 
-#define CONFIG_NOTIFICATION_SERVER          "api.telegram.org"
-#define CONFIG_NOTIFICATION_URL             "bot6613411665:AAGZ7HPSl2-hDrlzkZS0U_EXmaUIO8DVLd4/sendMessage?chat_id=267163277&text=You%27ve%20got%20mail!"
+#define CONFIG_API_SERVER                   "smart-mailbox.mat1jaczyyy.com"
+#define CONFIG_API_BASE_URL                 "api/mailbox/"
 
 #endif
