@@ -25,9 +25,8 @@
 #define CONFIG_MAIL_DEBOUNCE_ITERATIONS     20
 
 #define CONFIG_USE_STATUS_LED
-#define CONFIG_GPIO_STATUS_LED_R            GPIO_NUM_0
-#define CONFIG_GPIO_STATUS_LED_G            GPIO_NUM_1
-#define CONFIG_GPIO_STATUS_LED_B            GPIO_NUM_10
+#define CONFIG_RMT_STATUS_LED               RMT_CHANNEL_0
+#define CONFIG_GPIO_STATUS_LED              GPIO_NUM_8
 
 #define CONFIG_WIFI_MAXRETRY                3
 
