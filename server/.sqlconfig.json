@@ -1,8 +1,0 @@
-{
-    "database": "SMART_MAILBOX_DEV",
-    "server": "MAT1-PC\\SQL2022",
-    "driver": "msnodesqlv8",
-    "options": {
-        "trustedConnection": true
-    }
-}
