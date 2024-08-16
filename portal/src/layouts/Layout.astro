@@ -22,6 +22,10 @@ const redirect = function() {
     return null;
 }();
 
+let html = '';
+if (!redirect) {
+    html = await Astro.slots.render('default', [user]);
+}
 
 ---
 
@@ -58,7 +62,7 @@ const redirect = function() {
                 <img src="/res/logo.svg" alt="Logo">
             </div>
             <div id="content" class={index? "index" : ""}>
-                <slot />
+                <Fragment set:html={html} />
             </div>
 
             {index && <script>

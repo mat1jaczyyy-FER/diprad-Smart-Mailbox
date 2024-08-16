@@ -1,0 +1,14 @@
+---
+import Layout from '../layouts/Layout.astro';
+import type { Token } from '../utils/types';
+---
+
+<Layout>
+    {(user: Token) => <>
+        <p>{JSON.stringify(user)}</p>
+    </>}
+</Layout>
+
+<style>
+    
+</style>
