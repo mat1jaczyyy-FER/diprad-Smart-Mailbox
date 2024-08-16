@@ -33,6 +33,7 @@ RTC_DATA_ATTR uint8_t p = 0;
 RTC_DATA_ATTR uint8_t notify = 0;
 
 extern "C" void app_main() {
+    status_led.init();
     status_led.active();
     
     wifi_init();

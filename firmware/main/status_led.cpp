@@ -7,44 +7,41 @@ __attribute__((unused))
 static const char* TAG = "StatusLED";
 
 #if defined(CONFIG_USE_STATUS_LED)
-    StatusLED::StatusLED(gpio_num_t _r, gpio_num_t _g, gpio_num_t _b) {
-        r = _r;
-        g = _g;
-        b = _b;
-
-        gpio_set_direction(r, GPIO_MODE_OUTPUT);
-        gpio_set_direction(g, GPIO_MODE_OUTPUT);
-        gpio_set_direction(b, GPIO_MODE_OUTPUT);
-
-        gpio_set_level(r, 0);
-        gpio_set_level(g, 0);
-        gpio_set_level(b, 0);
+    StatusLED::StatusLED(rmt_channel_t _rmt, gpio_num_t _gpio) {
+        rmt = _rmt;
+        gpio = _gpio;
     }
 #else
     StatusLED::StatusLED() {}
 #endif
 
-void StatusLED::set(uint32_t rv, uint32_t gv, uint32_t bv) {
+void StatusLED::init() {
     #if defined(CONFIG_USE_STATUS_LED)
-        gpio_set_level(r, rv);
-        gpio_set_level(g, gv);
-        gpio_set_level(b, bv);
+        led = led_strip_init(rmt, gpio, 1);
+        led->clear(led, 50);
+    #endif
+}
+
+void StatusLED::set(uint8_t rv, uint8_t gv, uint8_t bv) {
+    #if defined(CONFIG_USE_STATUS_LED)
+        led->set_pixel(led, 0, rv, gv, bv);
+        led->refresh(led, 50);
     #endif
 }
 
 void StatusLED::active() {
     //ESP_LOGI(TAG, "Active");
-    this->set(0, 1, 0);
+    this->set(0, 255, 0);
 }
 
 void StatusLED::dpp_authentication() {
     //ESP_LOGI(TAG, "DPP Authentication");
-    this->set(0, 0, 1);
+    this->set(0, 0, 255);
 }
 
 void StatusLED::wifi_retrying() {
     //ESP_LOGI(TAG, "WiFi Retrying");
-    this->set(1, 0, 0);
+    this->set(255, 0, 0);
 }
 
 void StatusLED::sleeping() {
@@ -53,7 +50,7 @@ void StatusLED::sleeping() {
 }
 
 #if defined(CONFIG_USE_STATUS_LED)
-    StatusLED status_led(CONFIG_GPIO_STATUS_LED_R, CONFIG_GPIO_STATUS_LED_G, CONFIG_GPIO_STATUS_LED_B);
+    StatusLED status_led(CONFIG_RMT_STATUS_LED, CONFIG_GPIO_STATUS_LED);
 #else
     StatusLED status_led;
 #endif

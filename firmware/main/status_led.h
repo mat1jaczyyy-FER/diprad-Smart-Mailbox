@@ -3,15 +3,20 @@
 
 #include <freertos/FreeRTOS.h>
 #include <driver/gpio.h>
+#include <hal/rmt_types.h>
+
+#include <led_strip.h>
 
 class StatusLED {
     public:
         #if defined(CONFIG_USE_STATUS_LED)
-            StatusLED(gpio_num_t _r, gpio_num_t _g, gpio_num_t _b);
+            StatusLED(rmt_channel_t rmt, gpio_num_t gpio);
         #else
             StatusLED();
         #endif
-
+        
+        void init();
+        
         void active();
         void dpp_authentication();
         void wifi_retrying();
@@ -19,8 +24,10 @@ class StatusLED {
 
     #if defined(CONFIG_USE_STATUS_LED)
         private:
-            void set(uint32_t rv, uint32_t gv, uint32_t bv);
-            gpio_num_t r, g, b;
+            void set(uint8_t rv, uint8_t gv, uint8_t bv);
+            rmt_channel_t rmt;
+            gpio_num_t gpio;
+            led_strip_t* led;
     #endif
 };
 
