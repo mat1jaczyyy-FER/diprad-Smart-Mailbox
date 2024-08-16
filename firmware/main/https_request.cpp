@@ -85,10 +85,7 @@ bool https_request(const char* full_url, const char* req, const int req_len, cha
             bzero(buf, sizeof(buf));
             int ret = esp_tls_conn_read(tls, (char *)buf, sizeof(buf) - 1);
 
-            ESP_LOGI(TAG, "esp_tls_conn_read  returned %d", ret);
-
             if (ret == ESP_TLS_ERR_SSL_WANT_WRITE || ret == ESP_TLS_ERR_SSL_WANT_READ) {
-                ESP_LOGE(TAG, "esp_tls_conn_read  returned [-0x%02X](%s)", -ret, esp_err_to_name(ret));
                 continue;
             }
 
@@ -121,10 +118,7 @@ bool https_request(const char* full_url, const char* req, const int req_len, cha
             (*res)[res_len] = '\0';
         }
         
-        if (success) {
-            ESP_LOGI(TAG, "Response: %s", *res);
-
-        } else {
+        if (!success) {
             ESP_LOGE(TAG, "Failed to read response");
             free(*res);
             *res = NULL;

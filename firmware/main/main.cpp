@@ -2,6 +2,7 @@
 
 #include <freertos/FreeRTOS.h>
 #include "esp_log.h"
+#include "esp_task_wdt.h"
 
 #include "sleep.h"
 #include "wifi.h"
@@ -46,7 +47,7 @@ extern "C" void app_main() {
 
         char* config = api_config();
         if (config) {
-            ESP_LOGI("MAIN", "Config received: %s", config);
+            ESP_LOGI("MAIN", "Config received: \n\n%s\n", config);
             free(config);
         }
 
@@ -78,5 +79,7 @@ extern "C" void app_main() {
         status_led.sleeping();
 
         deep_sleep(CONFIG_SLEEP_INTERVAL * 1000);
+
+        esp_task_wdt_reset();
     }
 }
