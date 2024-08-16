@@ -1,12 +1,20 @@
 {
     "name": "smart-mailbox-server",
     "version": "1.0.0",
-    "description": "Smart Mailbox Server",
-    "main": "index.js",
-    "scripts": {
-      "start": "node index.js"
-    },
     "author": "mat1jaczyyy",
+    "description": "Smart Mailbox Server",
+    "type": "module",
+    "main": "dist/src/index.js",
+    "scripts": {
+      "tsc": "tsc",
+      "start": "tsc && node dist/src/index.js"
+    },
+    "devDependencies": {
+      "@types/express": "^4.17.21",
+      "@types/mssql": "^9.1.5",
+      "@types/node": "^22.2.0",
+      "typescript": "^5.5.4"
+    },
     "dependencies": {
       "express": "^4.19.2",
       "msnodesqlv8": "^4.2.1",

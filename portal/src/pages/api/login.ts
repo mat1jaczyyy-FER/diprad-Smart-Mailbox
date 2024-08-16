@@ -1,11 +1,11 @@
 import type { APIRoute } from 'astro';
 
 import env from "../../utils/env";
-import { createToken } from "../../utils/token";
+import { tryCreateToken } from "../../utils/auth";
 
 export const POST: APIRoute = async ({request}) => {
     const req = await request.json();
-    const token = createToken(req.username, req.password, env.maxAge);
+    const token = await tryCreateToken(req.username, req.password, env.maxAge);
 
     return token
         ? new Response(token)

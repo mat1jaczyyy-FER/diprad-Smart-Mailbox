@@ -1,13 +1,12 @@
 import jwt from "jsonwebtoken";
+import { serverAPI } from "./server";
 import type { Token } from "./types";
 
 // todo hide better in env?
 const secret = "secret";
 
-export function createToken(username: string, password: string, maxAge: number) {
-    // todo: check if username and password are valid in DB
-    const success = username === "mat1jaczyyy" && password === "qweasdzxc";
-
+export async function tryCreateToken(username: string, password: string, maxAge: number) {
+    const success = await serverAPI("api/login", { username, password });
     if (!success) {
         return null;
     }
@@ -34,7 +33,9 @@ export function verifyToken(token?: string) {
     if (!data.username)
         return null;
 
-    // todo check expire
+    const untilExpiry = (data.expires - Date.now()) / 1000;
+    if (untilExpiry < 0)
+        return null;
 
     return data;
 }
