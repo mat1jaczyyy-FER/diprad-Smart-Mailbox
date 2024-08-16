@@ -9,12 +9,12 @@
 
 class Infrared {
     public:
-        Infrared(gpio_num_t _en, adc1_channel_t _recv);
+        Infrared(gpio_num_t _en_tx, gpio_num_t _en_rx, adc1_channel_t _rx);
         uint8_t measure();
 
     private:
-        gpio_num_t en;
-        adc1_channel_t recv;
+        gpio_num_t en_tx, en_rx;
+        adc1_channel_t rx;
         esp_adc_cal_characteristics_t adc_chars;
 };
 

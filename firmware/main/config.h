@@ -15,8 +15,9 @@
 //#define CONFIG_MAIL_EMPTY_TO                58
 
 #define CONFIG_USE_INFRARED
-#define CONFIG_GPIO_INFRARED_EN             GPIO_NUM_3
-#define CONFIG_ADC_INFRARED_RECV            ADC1_CHANNEL_2
+#define CONFIG_GPIO_INFRARED_EN_RX          GPIO_NUM_1
+#define CONFIG_GPIO_INFRARED_EN_TX          GPIO_NUM_10
+#define CONFIG_ADC_INFRARED_RX              ADC1_CHANNEL_0
 
 #define CONFIG_MAIL_EMPTY_FROM              0
 #define CONFIG_MAIL_EMPTY_TO                100
