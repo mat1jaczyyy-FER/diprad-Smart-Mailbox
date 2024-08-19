@@ -85,7 +85,6 @@ uint8_t Infrared::measure() {
         gpio_set_level(en_tx, 0);
         gpio_set_level(en_rx, 0);
 
-
         if (i >= CONFIG_MEASURE_DISCARD) {
             float thresh = 0;
             bool is_ge = this->is_ge_lerp(baseline, result, &thresh);

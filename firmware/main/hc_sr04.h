@@ -6,11 +6,11 @@
 
 class HC_SR04 {
     public:
-        HC_SR04(gpio_num_t _trig, gpio_num_t _echo);
+        HC_SR04(gpio_num_t _en, gpio_num_t _trig, gpio_num_t _echo);
         uint8_t measure();
 
     private:
-        gpio_num_t trig, echo;
+        gpio_num_t en, trig, echo;
         float roundtrip();
 
         uint32_t empty_from, empty_to;

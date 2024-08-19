@@ -7,16 +7,19 @@
 
 static const char* TAG = "HC_SR04";
 
-HC_SR04::HC_SR04(gpio_num_t _trig, gpio_num_t _echo) {
+HC_SR04::HC_SR04(gpio_num_t _en, gpio_num_t _trig, gpio_num_t _echo) {
     empty_from = 54;
     empty_to = 58;
 
+    en = _en;
     trig = _trig;
     echo = _echo;
 
+    gpio_set_direction(en, GPIO_MODE_OUTPUT);
     gpio_set_direction(trig, GPIO_MODE_OUTPUT);
     gpio_set_direction(echo, GPIO_MODE_INPUT);
 
+    gpio_set_level(en, 0);
     gpio_set_level(trig, 0);
 }
 
@@ -83,6 +86,8 @@ bool HC_SR04::is_out_of_range(float mm) {
 uint8_t HC_SR04::measure() {
     uint8_t success = 0;
 
+    gpio_set_level(en, 1);
+
     for (uint8_t i = 0; i < CONFIG_MEASURE_ITERATIONS - CONFIG_MEASURE_SUCCESS + 1 + success; i++) {
         float roundtrip = this->roundtrip();
 
@@ -103,6 +108,8 @@ uint8_t HC_SR04::measure() {
         
         light_sleep(CONFIG_MEASURE_DELAY);
     }
+    
+    gpio_set_level(en, 0);
     
     return success;
 }

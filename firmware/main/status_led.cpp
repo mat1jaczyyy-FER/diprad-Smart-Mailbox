@@ -50,7 +50,7 @@ void StatusLED::sleeping() {
 }
 
 #if defined(CONFIG_USE_STATUS_LED)
-    StatusLED status_led(CONFIG_RMT_STATUS_LED, CONFIG_GPIO_STATUS_LED);
+    StatusLED status_led(CONFIG_STATUS_LED_RMT, CONFIG_STATUS_LED_GPIO);
 #else
     StatusLED status_led;
 #endif

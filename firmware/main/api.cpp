@@ -28,8 +28,27 @@ char* api_config() {
 bool api_notify() {
     return https_post_request(
         CONFIG_API_SERVER,
-        CONFIG_API_BASE_URL "config",
+        CONFIG_API_BASE_URL "notify",
         "{\"code\":\"" CONFIG_MAILBOX_PRIVATE_CODE "\"}",
+        NULL,
+        server_root_cert_pem_start,
+        server_root_cert_pem_end
+    );
+}
+
+bool api_battery(uint8_t battery_low) {
+    char json_payload[32];
+    snprintf(
+        json_payload,
+        sizeof(json_payload),
+        "{\"code\":\"" CONFIG_MAILBOX_PRIVATE_CODE "\"%s\", \"low\":%s}",
+        battery_low? "true" : "false"
+    );
+
+    return https_post_request(
+        CONFIG_API_SERVER,
+        CONFIG_API_BASE_URL "battery",
+        json_payload,
         NULL,
         server_root_cert_pem_start,
         server_root_cert_pem_end
