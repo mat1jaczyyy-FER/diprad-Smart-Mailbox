@@ -5,10 +5,22 @@ import type { Token } from '../utils/types';
 
 <Layout>
     {(user: Token) => <>
-        <p>{JSON.stringify(user)}</p>
+        <p>Welcome, {user.username}!</p>
+        <h1>Your Smart Mailboxes</h1>
+        <button id="register">Register new Smart Mailbox</button>
     </>}
 </Layout>
 
 <style>
     
 </style>
+
+<script is:inline>
+    document.addEventListener('DOMContentLoaded', () => {
+        const register = document.getElementById('register');
+        
+        register.addEventListener('click', () => {
+            window.location.href = '/register';
+        });
+    });
+</script>

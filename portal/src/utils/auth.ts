@@ -6,7 +6,7 @@ import type { Token } from "./types";
 const secret = "secret";
 
 export async function tryCreateToken(username: string, password: string, maxAge: number) {
-    const success = await serverAPI("api/login", { username, password });
+    const success: number = await serverAPI("api/login", { username, password });
     if (!success) {
         return null;
     }
@@ -14,6 +14,7 @@ export async function tryCreateToken(username: string, password: string, maxAge:
     return jwt.sign(
         {
             expires: Date.now() + maxAge * 1000,
+            id: success,
             username: username
         } as Token,
         secret

@@ -1,0 +1,25 @@
+---
+import type { Token } from '../utils/types';
+
+interface Props {
+    user: Token;
+}
+
+const { user } = Astro.props;
+---
+
+<div>
+    <span>Logged in as {user.username}</span>
+    <button id="logoutBtn">Logout</button>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const logoutBtn = document.getElementById("logoutBtn");
+        
+        logoutBtn!.addEventListener('click', async () => {
+            await fetch('/logout', { method: 'POST' });
+            window.location.href = '/';
+        });
+    });
+</script>

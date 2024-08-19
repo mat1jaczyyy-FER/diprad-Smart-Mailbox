@@ -1,3 +1,5 @@
+import 'dotenv/config';
+
 import { logWith } from './util/log.js';
 import { db } from './db/db.js';
 
@@ -23,7 +25,17 @@ app.post('/api/login', async (req, res) => {
         .input('password', req.body.password)
         .execute('sp_user_login');
 
-    res.json(result.recordset[0]?.result?? false);
+    res.json(result.recordset[0]?.result?? 0);
+});
+
+app.post('/api/register', async (req, res) => {
+    console.log(req.body);
+    const result = await db.request()
+        .input('IDuser', req.body.IDuser)
+        .input('public_code', req.body.public_code)
+        .execute('sp_register');
+
+    res.json(result.recordset[0]?.result?? 0);
 });
 
 app.listen(process.env.PORT || 6245, () => logWith('Express', 'Server started'));

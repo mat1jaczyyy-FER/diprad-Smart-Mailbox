@@ -1,0 +1,8 @@
+---
+import env from "../utils/env";
+
+if (Astro.request.method === "POST") {
+    Astro.cookies.delete(env.cookieName);
+}
+return Astro.redirect("/");
+---

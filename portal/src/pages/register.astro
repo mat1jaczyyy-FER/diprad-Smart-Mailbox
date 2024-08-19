@@ -1,0 +1,90 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout>
+    <h1>Register new Smart Mailbox</h1>
+    <form id="registerForm">
+        <div>
+            <label for="public_code">Enter the 7-character code on the back of your Smart Mailbox</label>
+            <input type="text" id="public_code" name="public_code" maxlength=7 required>
+        </div>
+        <div>
+            <button type="submit">Register</button>
+        </div>
+        <div id="register-message"></div>
+    </form>
+</Layout>
+
+<style>
+    
+</style>
+
+<script is:inline>
+    document.addEventListener("DOMContentLoaded", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+
+        if (code) {
+            const textbox = document.getElementById('public_code');
+            textbox.value = code;
+        }
+
+        const form = document.getElementById('registerForm');
+        const messageDiv = document.getElementById('register-message');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const inputs = form.querySelectorAll('input, button');
+            inputs.forEach(e => e.disabled = true);
+
+            messageDiv.textContent = '';
+
+            const public_code = (form.querySelector('input[name="public_code"]')).value;
+
+            let registered = false;
+            let loggedOut = false;
+            
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ public_code }),
+                });
+
+                if (response.ok) {
+                    messageDiv.textContent = 'Registered successfully!';
+                    messageDiv.style.color = 'green';
+
+                    registered = true;
+
+                } else if (response.status === 401) {
+                    messageDiv.textContent = 'You were logged out. Please log in again.';
+                    messageDiv.style.color = 'red';
+
+                    loggedOut = true;
+
+                } else {
+                    messageDiv.textContent = 'Something seems wrong. Please try again.';
+                    messageDiv.style.color = 'red';
+                }
+
+            } catch (error) {
+                messageDiv.textContent = 'An error occurred. Please try again.';
+                messageDiv.style.color = 'red';
+
+            } finally {
+                if (loggedOut) {
+                    setTimeout(() => { window.location = '/'; }, 1000);
+                } else if (registered) {
+                    setTimeout(() => { window.location = '/mailboxes'; }, 1000);
+                } else {
+                    inputs.forEach(e => e.disabled = false);
+                }
+            }
+        });
+    });
+</script>
