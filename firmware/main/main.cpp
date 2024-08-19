@@ -9,12 +9,11 @@
 #include "api.h"
 #include "hc_sr04.h"
 #include "infrared.h"
-#include "debouncer.h"
 #include "status_led.h"
 
 #if (!defined(CONFIG_USE_ULTRASONIC) && !defined(CONFIG_USE_INFRARED)) || \
     (defined(CONFIG_USE_ULTRASONIC) && defined(CONFIG_USE_INFRARED))
-    #error "Only of CONFIG_USE_ULTRASONIC or CONFIG_USE_INFRARED must be defined"
+    #error "Only one of CONFIG_USE_ULTRASONIC or CONFIG_USE_INFRARED must be defined"
 #endif
 
 #if defined(CONFIG_USE_ULTRASONIC)
@@ -22,12 +21,6 @@
 #elif defined(CONFIG_USE_INFRARED)
     Infrared sensor(CONFIG_GPIO_INFRARED_EN_TX, CONFIG_GPIO_INFRARED_EN_RX, CONFIG_ADC_INFRARED_RX);
 #endif
-
-#if !(defined(CONFIG_MAIL_EMPTY_FROM) && defined(CONFIG_MAIL_EMPTY_TO))
-    #error "CONFIG_MAIL_EMPTY_FROM and CONFIG_MAIL_EMPTY_TO must be defined"
-#endif
-
-RTC_DATA_ATTR Debouncer db;
 
 RTC_DATA_ATTR uint8_t first_boot = 1;
 RTC_DATA_ATTR uint8_t p = 0;
@@ -41,7 +34,6 @@ extern "C" void app_main() {
 
     if (first_boot) {
         first_boot = 0;
-        debouncer_new(&db, CONFIG_MAIL_DEBOUNCE_ITERATIONS, 0);
 
         wifi_start();
 
@@ -57,16 +49,10 @@ extern "C" void app_main() {
     while (1) {
         status_led.active();
 
-        for (uint8_t i = 0; !notify && i < CONFIG_MAIL_DEBOUNCE_ITERATIONS * 2; i++) {
-            uint8_t x = sensor.measure();
+        bool x = sensor.measure() > 0;
 
-            x = debouncer_tick(&db, x);
-
-            notify |= ~p & x;
-            p = x;
-
-            light_sleep(CONFIG_MAIL_SENSOR_POLL_DELAY);
-        }
+        notify |= ~p & x;
+        p = x;
         
         if (notify) {
             wifi_start();

@@ -3,9 +3,14 @@
 
 #include <esp_log.h>
 
+#include "sleep.h"
+
 static const char* TAG = "HC_SR04";
 
 HC_SR04::HC_SR04(gpio_num_t _trig, gpio_num_t _echo) {
+    empty_from = 54;
+    empty_to = 58;
+
     trig = _trig;
     echo = _echo;
 
@@ -23,7 +28,9 @@ portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;
 #define ENTER_CRITICAL portENTER_CRITICAL(&mux)
 #define EXIT_CRITICAL portEXIT_CRITICAL(&mux)
 
-uint8_t HC_SR04::measure() {
+float HC_SR04::roundtrip() {
+    float distance = -3;
+
     ENTER_CRITICAL;
         gpio_set_level(trig, 0);
         ets_delay_us(4);
@@ -33,7 +40,7 @@ uint8_t HC_SR04::measure() {
 
         if (gpio_get_level(echo)) {
             EXIT_CRITICAL;
-            ESP_LOGE(TAG, "Cannot ping");
+            ESP_LOGE(TAG, "(Cannot ping)");
             return -1;
         }
 
@@ -41,8 +48,8 @@ uint8_t HC_SR04::measure() {
         while (!gpio_get_level(echo)) {
             if (esp_timer_get_time() - start >= TIMEOUT) {
                 EXIT_CRITICAL;
-                ESP_LOGE(TAG, "Ping timeout");
-                return 0;
+                ESP_LOGE(TAG, "(Ping timeout)");
+                return -2;
             }
         }
 
@@ -50,16 +57,52 @@ uint8_t HC_SR04::measure() {
         int64_t echo_end = echo_start;
         while (gpio_get_level(echo)) {
             echo_end = esp_timer_get_time();
-            if (echo_end - echo_start >= MAX_DISTANCE * ROUNDTRIP_MM) {
+            distance = (float)(echo_end - echo_start) / ROUNDTRIP_MM;
+            if (distance >= MAX_DISTANCE) {
                 EXIT_CRITICAL;
-                ESP_LOGI(TAG, "%6.2f cm (Echo timeout)", MAX_DISTANCE);
-                return 0;
+                ESP_LOGE(TAG, "(Echo timeout)");
+                return MAX_DISTANCE;
             }
         }
     EXIT_CRITICAL;
 
-    float result = (float)(echo_end - echo_start) / ROUNDTRIP_MM;
-    ESP_LOGI(TAG, "%6.2f mm", result);
+    return distance;
+}
+
+void HC_SR04::set_config(uint32_t* config) {
+    empty_from = *(config++);
+    empty_to = *(config++);
+}
+
+bool HC_SR04::is_out_of_range(float mm) {
+    return mm < 0
+        ? false
+        : !(empty_from <= mm && mm <= empty_to);
+}
+
+uint8_t HC_SR04::measure() {
+    uint8_t success = 0;
+
+    for (uint8_t i = 0; i < CONFIG_MEASURE_ITERATIONS - CONFIG_MEASURE_SUCCESS + 1 + success; i++) {
+        float roundtrip = this->roundtrip();
+
+        if (i >= CONFIG_MEASURE_DISCARD) {
+            ESP_LOGI(TAG, "roundtrip => %6.2f mm", roundtrip);
+
+            if (this->is_out_of_range(roundtrip)) {
+                if (++success >= CONFIG_MEASURE_SUCCESS) {
+                    break;
+                }
+            } else {
+                success = 0;
+            }
+
+        } else {
+            ESP_LOGI(TAG, "roundtrip => %6.2f mm, discarded", roundtrip);
+        }
+        
+        light_sleep(CONFIG_MEASURE_DELAY);
+    }
     
-    return !(CONFIG_MAIL_EMPTY_FROM <= result && result <= CONFIG_MAIL_EMPTY_TO);
+    return success;
 }
