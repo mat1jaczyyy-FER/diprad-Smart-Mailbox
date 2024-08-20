@@ -18,7 +18,6 @@ static const char* TAG = "StatusLED";
 void StatusLED::init() {
     #if defined(CONFIG_USE_STATUS_LED)
         led = led_strip_init(rmt, gpio, 1);
-        led->clear(led, 50);
     #endif
 }
 
@@ -42,6 +41,11 @@ void StatusLED::dpp_authentication() {
 void StatusLED::wifi_retrying() {
     //ESP_LOGI(TAG, "WiFi Retrying");
     this->set(255, 0, 0);
+}
+
+void StatusLED::api_retrying() {
+    //ESP_LOGI(TAG, "API Retrying");
+    this->set(255, 160, 0);
 }
 
 void StatusLED::sleeping() {

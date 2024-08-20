@@ -1,5 +1,10 @@
 #include "config.h"
 
+#if (!defined(CONFIG_USE_ULTRASONIC) && !defined(CONFIG_USE_INFRARED)) || \
+    (defined(CONFIG_USE_ULTRASONIC) && defined(CONFIG_USE_INFRARED))
+    #error "Only one of CONFIG_USE_ULTRASONIC or CONFIG_USE_INFRARED must be defined"
+#endif
+
 #include <freertos/FreeRTOS.h>
 #include "esp_log.h"
 #include "esp_task_wdt.h"
@@ -11,17 +16,6 @@
 #include "infrared.h"
 #include "status_led.h"
 #include "battery.h"
-
-#if (!defined(CONFIG_USE_ULTRASONIC) && !defined(CONFIG_USE_INFRARED)) || \
-    (defined(CONFIG_USE_ULTRASONIC) && defined(CONFIG_USE_INFRARED))
-    #error "Only one of CONFIG_USE_ULTRASONIC or CONFIG_USE_INFRARED must be defined"
-#endif
-
-#if defined(CONFIG_USE_ULTRASONIC)
-    HC_SR04 sensor(CONFIG_ULTRASONIC_GPIO_TRIG, CONFIG_ULTRASONIC_GPIO_ECHO);
-#elif defined(CONFIG_USE_INFRARED)
-    Infrared sensor(CONFIG_INFRARED_GPIO_TX_EN, CONFIG_INFRARED_GPIO_RX_EN, CONFIG_INFRARED_ADC_RX);
-#endif
 
 RTC_DATA_ATTR uint8_t first_boot = 1;
 RTC_DATA_ATTR uint8_t mail_state = 0;
@@ -36,20 +30,17 @@ RTC_DATA_ATTR uint8_t mail_notify = 0;
 
 extern "C" void app_main() {
     status_led.init();
-    status_led.active();
-    
     wifi_init();
 
     if (first_boot) {
         first_boot = 0;
+        status_led.active();
 
         wifi_start();
 
-        char* config = api_config();
-        if (config) {
-            ESP_LOGI("MAIN", "Config received: \n\n%s\n", config);
-            free(config);
-        }
+        uint32_t* config = api_config();
+        sensor.set_config(config);
+        free(config);
 
         wifi_stop();
     }

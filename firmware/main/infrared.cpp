@@ -1,4 +1,6 @@
 #include "config.h"
+#if defined(CONFIG_USE_INFRARED)
+
 #include "infrared.h"
 
 #include <string.h>
@@ -9,21 +11,10 @@
 
 static const char* TAG = "Infrared";
 
+RTC_DATA_ATTR uint32_t lerp[8][2];
+RTC_DATA_ATTR uint8_t lerp_n;
+
 Infrared::Infrared(gpio_num_t _en_tx, gpio_num_t _en_rx, adc1_channel_t _rx) {
-    lerp_n = 4;
-
-    lerp[0][0] = 0;
-    lerp[0][1] = 58;
-
-    lerp[1][0] = 30;
-    lerp[1][1] = 58;
-
-    lerp[2][0] = 75;
-    lerp[2][1] = 112;
-
-    lerp[3][0] = 200;
-    lerp[3][1] = 237;
-
     en_tx = _en_tx;
     en_rx = _en_rx;
     rx = _rx;
@@ -107,3 +98,7 @@ uint8_t Infrared::measure() {
 
     return success;
 }
+
+Infrared sensor(CONFIG_INFRARED_GPIO_TX_EN, CONFIG_INFRARED_GPIO_RX_EN, CONFIG_INFRARED_ADC_RX);
+
+#endif

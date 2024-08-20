@@ -20,6 +20,7 @@ class StatusLED {
         void active();
         void dpp_authentication();
         void wifi_retrying();
+        void api_retrying();
         void sleeping();
 
     #if defined(CONFIG_USE_STATUS_LED)

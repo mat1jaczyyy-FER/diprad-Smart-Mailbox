@@ -34,5 +34,6 @@
 
 #define CONFIG_API_SERVER                   "smart-mailbox.mat1jaczyyy.com"
 #define CONFIG_API_BASE_URL                 "api/mailbox/"
+#define CONFIG_API_FAIL_INTERVAL            10 // s
 
 #endif

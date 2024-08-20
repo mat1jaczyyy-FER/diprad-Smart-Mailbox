@@ -1,4 +1,6 @@
 #include "config.h"
+#if defined(CONFIG_USE_ULTRASONIC)
+
 #include "hc_sr04.h"
 
 #include <esp_log.h>
@@ -7,10 +9,9 @@
 
 static const char* TAG = "HC_SR04";
 
-HC_SR04::HC_SR04(gpio_num_t _en, gpio_num_t _trig, gpio_num_t _echo) {
-    empty_from = 54;
-    empty_to = 58;
+RTC_DATA_ATTR uint32_t empty_from, empty_to;
 
+HC_SR04::HC_SR04(gpio_num_t _en, gpio_num_t _trig, gpio_num_t _echo) {
     en = _en;
     trig = _trig;
     echo = _echo;
@@ -21,6 +22,11 @@ HC_SR04::HC_SR04(gpio_num_t _en, gpio_num_t _trig, gpio_num_t _echo) {
 
     gpio_set_level(en, 0);
     gpio_set_level(trig, 0);
+}
+
+void HC_SR04::set_config(uint32_t* config) {
+    empty_from = *(config++);
+    empty_to = *(config++);
 }
 
 #define TIMEOUT 6000
@@ -72,11 +78,6 @@ float HC_SR04::roundtrip() {
     return distance;
 }
 
-void HC_SR04::set_config(uint32_t* config) {
-    empty_from = *(config++);
-    empty_to = *(config++);
-}
-
 bool HC_SR04::is_out_of_range(float mm) {
     return mm < 0
         ? false
@@ -113,3 +114,7 @@ uint8_t HC_SR04::measure() {
     
     return success;
 }
+
+HC_SR04 sensor(CONFIG_ULTRASONIC_GPIO_EN, CONFIG_ULTRASONIC_GPIO_TRIG, CONFIG_ULTRASONIC_GPIO_ECHO);
+
+#endif
