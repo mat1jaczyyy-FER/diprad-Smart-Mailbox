@@ -65,7 +65,7 @@ if (!redirect) {
             </div>
             <div id="content" class={index? "index" : ""}>
                 <Fragment set:html={html} />
-                {!index && <LogoutButton user={user} />}
+                {!index && <LogoutButton user={user!} />}
             </div>
 
             {index && <script>
