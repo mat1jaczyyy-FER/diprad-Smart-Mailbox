@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 
-const SERVER_URL = 'http://localhost:6245';
+const SERVER_URL = 'http://localhost:6246/internal';
 
 async function send(path: string, stringified: string) {
     return await fetch(`${SERVER_URL}/${path}`, {
@@ -12,7 +12,7 @@ async function send(path: string, stringified: string) {
     });
 }
 
-export async function serverAPI(path: string, data: any) {
+export async function internalAPI(path: string, data: any) {
     return (await send(path, JSON.stringify(data))).json();
 }
 

@@ -1,12 +1,12 @@
 import jwt from "jsonwebtoken";
-import { serverAPI } from "./server";
+import { internalAPI } from "./server";
 import type { Token } from "./types";
 
 // todo hide better in env?
 const secret = "secret";
 
 export async function tryCreateToken(username: string, password: string, maxAge: number) {
-    const success: number = await serverAPI("api/login", { username, password });
+    const success: number = await internalAPI("login", { username, password });
     if (!success) {
         return null;
     }
