@@ -31,22 +31,26 @@ app.post('/internal/mailbox/config', async (req, res) => {
     if (type == 1) {
         const config: UltrasoundConfig = JSON.parse(result.recordset[0].config);
 
-        buffer = Buffer.alloc(config.length * 4);
+        buffer = Buffer.alloc(4 + config.length * 4);
+        
+        buffer.writeUInt32LE((new Date().getTime() / 1000) % 86400, 0);
 
         for (let i = 0; i < config.length; i++) {
-            buffer.writeUInt32LE(config[i], i * 4);
+            buffer.writeUInt32LE(config[i], 4 + i * 4);
         }
 
     } else if (type == 2) {
         const config: InfraredConfig = JSON.parse(result.recordset[0].config);
 
-        buffer = Buffer.alloc(config.length * 8 + 4);
+        buffer = Buffer.alloc(4 + 4 + config.length * 8);
+        
+        buffer.writeUInt32LE((new Date().getTime() / 1000) % 86400, 0);
 
-        buffer.writeUInt32LE(config.length, 0);
+        buffer.writeUInt32LE(config.length, 4);
 
         for (let i = 0; i < config.length; i++) {
-            buffer.writeUInt32LE(config[i][0], i * 8 + 4);
-            buffer.writeUInt32LE(config[i][1], i * 8 + 8);
+            buffer.writeUInt32LE(config[i][0], 2 * 4 + i * 8);
+            buffer.writeUInt32LE(config[i][1], 2 * 4 + i * 8 + 4);
         }
     }
 

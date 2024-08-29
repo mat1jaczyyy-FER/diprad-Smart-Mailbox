@@ -4,8 +4,8 @@
 #define CONFIG_MAILBOX_PUBLIC_CODE          "CXIGJ5A"
 #define CONFIG_MAILBOX_PRIVATE_CODE         "WTCO7D1"
 
-#define CONFIG_SLEEP_INTERVAL               3 // s
-#define CONFIG_SLEEP_MAXLEVEL               0
+#define CONFIG_SLEEP_MAXLEVEL               1
+//#define CONFIG_SLEEP_TEST_INTERVAL          3 // s
 
 //#define CONFIG_USE_ULTRASONIC
 #define CONFIG_ULTRASONIC_GPIO_EN           GPIO_NUM_10

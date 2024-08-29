@@ -39,7 +39,10 @@ extern "C" void app_main() {
         wifi_start();
 
         uint32_t* config = api_config();
-        sensor.set_config(config);
+        
+        mailbox_sleep_set_seconds_of_day(*config);
+        sensor.set_config(config + 1);
+
         free(config);
 
         wifi_stop();
@@ -74,10 +77,9 @@ extern "C" void app_main() {
             #endif
             wifi_stop();
         }
-        
-        status_led.sleeping();
 
-        deep_sleep(CONFIG_SLEEP_INTERVAL * 1000);
+        status_led.sleeping();
+        mailbox_sleep();
 
         esp_task_wdt_reset();
     }
