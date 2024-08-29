@@ -10,4 +10,4 @@ export const POST: APIRoute = async ({request}) => {
     return token
         ? new Response(token)
         : new Response(null, { status: 401 });
-}
+};

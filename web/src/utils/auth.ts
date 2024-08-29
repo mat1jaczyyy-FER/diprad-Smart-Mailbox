@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { db } from "./db";
 import { internalAPI } from "./server";
 import type { Token } from "./types";
 
@@ -6,7 +7,12 @@ import type { Token } from "./types";
 const secret = "secret";
 
 export async function tryCreateToken(username: string, password: string, maxAge: number) {
-    const success: number = await internalAPI("login", { username, password });
+    const result = await db.request()
+        .input('username', username)
+        .input('password', password)
+        .execute('sp_user_login');
+    
+    const success = result.recordset[0]?.result?? 0;
     if (!success) {
         return null;
     }

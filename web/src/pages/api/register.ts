@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 
+import { db } from "../../utils/db";
 import env from "../../utils/env";
 import { verifyToken } from '../../utils/auth';
 import { internalAPI } from '../../utils/server';
@@ -12,12 +13,13 @@ export const POST: APIRoute = async ({cookies, request}) => {
     if (!user) {
         return new Response(null, { status: 401 });
     }
-
-    const success: number = await internalAPI("register", {
-        IDuser: user.id,
-        public_code: req.public_code
-    });
     
+    const result = await db.request()
+        .input('IDuser', user.id)
+        .input('public_code', req.public_code)
+        .execute('sp_register');
+
+    const success: number = result.recordset[0]?.result?? 0;
     if (!success) {
         return new Response(null, { status: 406 });
     }

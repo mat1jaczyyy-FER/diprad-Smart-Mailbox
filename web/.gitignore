@@ -1,3 +1,6 @@
+# SQL Connection String / Credentials
+/.sqlconfig.json
+
 # visual studio code
 .vscode/
 
