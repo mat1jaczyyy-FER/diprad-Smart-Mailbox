@@ -88,6 +88,10 @@ uint8_t HC_SR04::measure() {
     uint8_t success = 0;
 
     gpio_set_level(en, 1);
+    gpio_hold_en(en);
+
+    ESP_LOGI(TAG, "Waiting for sensor to boot...");
+    light_sleep(500);
 
     for (uint8_t i = 0; i < CONFIG_MEASURE_ITERATIONS - CONFIG_MEASURE_SUCCESS + 1 + success; i++) {
         float roundtrip = this->roundtrip();
@@ -109,7 +113,8 @@ uint8_t HC_SR04::measure() {
         
         light_sleep(CONFIG_MEASURE_DELAY);
     }
-    
+
+    gpio_hold_dis(en);
     gpio_set_level(en, 0);
     
     return success;

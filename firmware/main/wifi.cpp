@@ -86,6 +86,7 @@ void dpp_enrollee_event_cb(esp_supp_dpp_event_t event, void* data) {
             memcpy(&wifi_config, data, sizeof(wifi_config));
             esp_wifi_set_config(WIFI_IF_STA, &wifi_config);
             esp_supp_dpp_stop_listen();
+            status_led.active();
             ESP_LOGI(TAG, "DPP Authentication successful, connecting to AP: %s", wifi_config.sta.ssid);
             retries = 0;
             esp_wifi_connect();
