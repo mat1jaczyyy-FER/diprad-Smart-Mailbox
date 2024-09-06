@@ -3,8 +3,8 @@
 
 #include <freertos/FreeRTOS.h>
 
-uint32_t* api_config();
-bool api_notify();
-bool api_battery(uint8_t battery_low);
+extern uint32_t* api_config();
+extern bool api_notify();
+extern bool api_battery(bool battery_low);
 
 #endif
