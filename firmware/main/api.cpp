@@ -106,12 +106,12 @@ bool api_notify() {
     );
 }
 
-bool api_battery(uint8_t battery_low) {
+bool api_battery(bool battery_low) {
     char json_payload[40];
     snprintf(
         json_payload,
         sizeof(json_payload),
-        "{\"private_code\":\"" CONFIG_MAILBOX_PRIVATE_CODE "\"%s\", \"low\":%s}",
+        "{\"private_code\":\"" CONFIG_MAILBOX_PRIVATE_CODE "\", \"low\":%s}",
         battery_low? "true" : "false"
     );
 

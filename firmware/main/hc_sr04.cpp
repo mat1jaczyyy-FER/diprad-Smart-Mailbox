@@ -31,7 +31,7 @@ void HC_SR04::set_config(uint32_t* config) {
 
 #define TIMEOUT 6000
 #define MAX_DISTANCE 4000
-#define ROUNDTRIP_MM 5.8823529411764705882352941176471
+#define ROUNDTRIP_TO_MM 0.17
 
 portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;
 #define ENTER_CRITICAL portENTER_CRITICAL(&mux)
@@ -66,7 +66,7 @@ float HC_SR04::roundtrip() {
         int64_t echo_end = echo_start;
         while (gpio_get_level(echo)) {
             echo_end = esp_timer_get_time();
-            distance = (float)(echo_end - echo_start) / ROUNDTRIP_MM;
+            distance = (float)(echo_end - echo_start) * ROUNDTRIP_TO_MM;
             if (distance >= MAX_DISTANCE) {
                 EXIT_CRITICAL;
                 ESP_LOGE(TAG, "(Echo timeout)");
