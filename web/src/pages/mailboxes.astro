@@ -7,7 +7,8 @@ import type { Token } from '../utils/types';
     {(user: Token) => <>
         <p>Welcome, {user.username}!</p>
         <h1>Your Smart Mailboxes</h1>
-        <button id="register">Register new Smart Mailbox</button>
+        <button id="enroll">Enroll new Smart Mailbox</button>
+
     </>}
 </Layout>
 
@@ -17,10 +18,10 @@ import type { Token } from '../utils/types';
 
 <script is:inline>
     document.addEventListener('DOMContentLoaded', () => {
-        const register = document.getElementById('register');
+        const enroll = document.getElementById('enroll');
         
-        register.addEventListener('click', () => {
-            window.location.href = '/register';
+        enroll?.addEventListener('click', () => {
+            window.location.href = '/enroll';
         });
     });
 </script>

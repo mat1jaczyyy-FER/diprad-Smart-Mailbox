@@ -4,7 +4,8 @@ import env from "../utils/env";
 ---
 
 <Layout index>
-    <form id="loginForm">
+    <form id="login-form">
+        <span>Log in to your account</span>
         <div>
             <label for="username">Username:</label>
             <input type="text" name="username" required>
@@ -17,6 +18,27 @@ import env from "../utils/env";
             <button type="submit">Login</button>
         </div>
         <div id="login-message"></div>
+        <a id="want-register" href="#">...I don't have an account yet</a>
+    </form>
+    <form id="register-form" style="display: none;" autocomplete="new-password">
+        <span>Register a new account</span>
+        <div>
+            <label for="username">Username:</label>
+            <input type="text" name="username" required autocomplete="new-password">
+        </div>
+        <div>
+            <label for="password">Password:</label>
+            <input type="password" name="password" required autocomplete="new-password">
+        </div>
+        <div>
+            <label for="repeat">Repeat Password:</label>
+            <input type="password" name="repeat" required autocomplete="new-password">
+        </div>
+        <div>
+            <button type="submit">Register</button>
+        </div>
+        <div id="register-message"></div>
+        <a id="want-login" href="#">...I already have an account</a>
     </form>
 </Layout>
 
@@ -28,56 +50,94 @@ import env from "../utils/env";
     cookieName: env.cookieName,
     maxAge: env.maxAge
 }} is:inline>
-    document.addEventListener("DOMContentLoaded", () => {
-        const form = document.getElementById('loginForm');
-        const messageDiv = document.getElementById('login-message');
+    async function submit(form, message, action, text) {
+        const inputs = form.querySelectorAll('input, button');
+        inputs.forEach(e => e.disabled = true);
 
-        form.addEventListener('submit', async (event) => {
-            event.preventDefault();
+        message.textContent = '';
 
-            const inputs = form.querySelectorAll('input, button');
-            inputs.forEach(e => e.disabled = true);
+        const username = form.querySelector('input[name="username"]').value;
+        const password = form.querySelector('input[name="password"]').value;
 
-            messageDiv.textContent = '';
+        const repeatElement = form.querySelector('input[name="repeat"]');
 
-            const username = (form.querySelector('input[name="username"]')).value;
-            const password = (form.querySelector('input[name="password"]')).value;
+        if (repeatElement) {
+            const repeat = repeatElement.value;
 
-            let loggedIn = false;
-
-            try {
-                const response = await fetch('/api/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ username, password }),
-                });
-
-                if (response.ok) {
-                    messageDiv.textContent = 'Login successful!';
-                    messageDiv.style.color = 'green';
-
-                    const token = await response.text();
-                    document.cookie = `${cookieName}=${token}; max-age=${maxAge}; path=/`;
-                    loggedIn = true;
-
-                } else {
-                    messageDiv.textContent = 'Something seems wrong. Please try again.';
-                    messageDiv.style.color = 'red';
-                }
-
-            } catch (error) {
-                messageDiv.textContent = 'An error occurred. Please try again.';
-                messageDiv.style.color = 'red';
-
-            } finally {
-                if (loggedIn) {
-                    setTimeout(() => { window.location = '/'; }, 1000);
-                } else {
-                    inputs.forEach(e => e.disabled = false);
-                }
+            if (password !== repeat) {
+                message.textContent = 'Passwords do not match.';
+                message.style.color = 'red';
+                inputs.forEach(e => e.disabled = false);
+                return;
             }
+        }
+
+        let loggedIn = false;
+
+        try {
+            const response = await fetch(action, {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password }),
+            });
+
+            if (response.ok) {
+                message.textContent = `${text} successful!`;
+                message.style.color = 'green';
+
+                loggedIn = true;
+
+            } else {
+                message.textContent = 'Something seems wrong. Please try again.';
+                message.style.color = 'red';
+            }
+
+        } catch (error) {
+            message.textContent = 'An error occurred. Please try again.';
+            message.style.color = 'red';
+
+        } finally {
+            if (loggedIn) {
+                setTimeout(() => { window.location = '/'; }, 1000);
+            } else {
+                inputs.forEach(e => e.disabled = false);
+            }
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const wantRegister = document.getElementById('want-register');
+        const wantLogin = document.getElementById('want-login');
+
+        const loginForm = document.getElementById('login-form');
+        const loginMessage = document.getElementById('login-message');
+
+        const registerForm = document.getElementById('register-form');
+        const registerMessage = document.getElementById('register-message');
+
+        wantRegister?.addEventListener('click', (event) => {
+            event.preventDefault();
+            loginForm.style.display = 'none';
+            registerForm.style.display = null;
+        });
+
+        wantLogin?.addEventListener('click', (event) => {
+            event.preventDefault();
+            registerForm.style.display = 'none';
+            loginForm.style.display = null;
+        });
+
+        loginForm?.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            await submit(loginForm, loginMessage, '/api/user/login', 'Login');
+        });
+
+        registerForm?.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            await submit(registerForm, registerMessage, '/api/user/register', 'Register');
         });
     });
 </script>

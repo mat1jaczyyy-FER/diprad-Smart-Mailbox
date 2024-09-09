@@ -13,13 +13,30 @@ const { user } = Astro.props;
     <button id="logoutBtn">Logout</button>
 </div>
 
-<script>
+<script is:inline>
     document.addEventListener('DOMContentLoaded', () => {
         const logoutBtn = document.getElementById("logoutBtn");
         
         logoutBtn?.addEventListener('click', async () => {
-            await fetch('/logout', { method: 'POST' });
-            window.location.href = '/';
+            logoutBtn.disabled = true;
+
+            let loggedOut = false;
+
+            try {
+                const res = await fetch('/api/user/logout', {
+                    method: 'POST',
+                    credentials: 'same-origin'
+                });
+                if (res.ok) {
+                    loggedOut = true;
+                }
+            } finally {
+                if (loggedOut) {
+                    window.location.href = '/';
+                } else {
+                    logoutBtn.disabled = false;
+                }
+            }
         });
     });
 </script>

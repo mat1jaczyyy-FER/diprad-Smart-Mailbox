@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import { db } from "../../../utils/db";
 
-type UltrasoundConfig = [number, number];
+type UltrasonicConfig = [number, number];
 type InfraredConfig = [number, number][];
 
 export const POST: APIRoute = async ({ request }) => {
@@ -20,7 +20,7 @@ export const POST: APIRoute = async ({ request }) => {
     let buffer: Buffer = Buffer.alloc(0);
 
     if (type == 1) {
-        const config: UltrasoundConfig = JSON.parse(result.recordset[0].config);
+        const config: UltrasonicConfig = JSON.parse(result.recordset[0].config);
 
         buffer = Buffer.alloc(4 + config.length * 4);
         
