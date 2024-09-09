@@ -16,7 +16,7 @@ function signToken(username: string, id: number, maxAge: number) {
             id: id,
             username: username
         } as Token,
-        env.secret
+        env.jwtSecret
     );
 }
 
@@ -29,7 +29,13 @@ function verifyToken(token?: string) {
             return null;
     }
 
-    const data = jwt.verify(token, env.secret) as Token;
+    let data;
+    try {
+        data = jwt.verify(token, env.jwtSecret) as Token;
+    } catch {
+        return null;
+    }
+    
     if (!data.username)
         return null;
 
@@ -41,7 +47,7 @@ function verifyToken(token?: string) {
 }
 
 async function hashPassword(password: string, salt: Buffer) {
-    const hmac = crypto.createHmac('sha256', env.secret);
+    const hmac = crypto.createHmac('sha256', env.authPepper);
     hmac.update(password);
     return await scryptAsync(hmac.digest(), salt, 64);
 }

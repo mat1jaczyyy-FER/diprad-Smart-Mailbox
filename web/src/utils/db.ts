@@ -1,9 +1,7 @@
 import sql from 'mssql/msnodesqlv8.js';
+import env from './env';
 
-import sqlconfig from '../../.sqlconfig.json' assert { type: 'json' };
-const SQLConfig = sqlconfig as sql.config;
-
-const db = new sql.ConnectionPool(SQLConfig);
+const db = new sql.ConnectionPool(env.sqlconfig);
 await db.connect();
 
 export { db };

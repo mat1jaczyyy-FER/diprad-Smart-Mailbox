@@ -1,5 +1,5 @@
-# SQL Connection String / Credentials
-/.sqlconfig.json
+# Secrets
+/.secrets.json
 
 # visual studio code
 .vscode/

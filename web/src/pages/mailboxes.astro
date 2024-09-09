@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 
 import { getCurrentUser } from '../utils/auth';
 import { db } from '../utils/db';
+import env from "../utils/env";
 
 const user = getCurrentUser(Astro.cookies);
 if (!user) {
@@ -19,11 +20,12 @@ const mailboxes = await db.request()
     <h1>Your Smart Mailboxes</h1>
     <button id="enroll">Enroll new Smart Mailbox</button>
     {mailboxes.recordset.map(mailbox => (
-        <div>
+        <div class="mailbox">
             <h2>{mailbox.public_code}</h2>
             <p>Last seen: {mailbox.last_seen?? "Never seen"}</p>
             <p>Battery status: {mailbox.battery_low? "Low" : "Good"}</p>
             <p>Last push: {mailbox.last_push?? "Never pushed"}</p>
+            <button data-public-code={mailbox.public_code}>Subscribe to notifications</button>
             <hr>
         </div>
     ))}
@@ -33,12 +35,89 @@ const mailboxes = await db.request()
     
 </style>
 
-<script is:inline>
+<script define:vars={{
+    vapidKey: env.vapid.publicKey
+}} is:inline>
+    function urlBase64ToUint8Array(base64String) {
+        const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+        const base64 = (base64String + padding)
+            .replace(/\-/g, "+")
+            .replace(/_/g, "/");
+
+        const rawData = window.atob(base64);
+        const outputArray = new Uint8Array(rawData.length);
+
+        for (let i = 0; i < rawData.length; ++i) {
+            outputArray[i] = rawData.charCodeAt(i);
+        }
+        return outputArray;
+    }
+
+    async function subscribe(btn) {
+        btn.disabled = true;
+
+        const public_code = btn.dataset.publicCode;
+
+        let loggedOut = false;
+        
+        try {
+            const registration = await navigator.serviceWorker.register('/js/push.js');
+
+            const subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array(vapidKey)
+            });
+            
+            const response = await fetch('/api/push/subscribe', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ public_code, subscription }),
+            });
+
+            if (response.ok) {
+                console.log('Subscribed to notifications');
+
+            } else if (response.status === 401) {
+                loggedOut = true;
+
+            } else {
+                console.error('Failed to subscribe:', response.statusText);
+            }
+
+        } catch (error) {
+            console.error('Failed to subscribe:', error);
+
+        } finally {
+            if (loggedOut) {
+                setTimeout(() => { window.location = '/'; }, 1000);
+            } else {
+                btn.disabled = false;
+            }
+        }
+    };
+
     document.addEventListener('DOMContentLoaded', () => {
         const enroll = document.getElementById('enroll');
         
         enroll?.addEventListener('click', () => {
             window.location.href = '/enroll';
         });
+
+        const subBtns = document.querySelectorAll('.mailbox > button');
+
+        if ('serviceWorker' in navigator && 'PushManager' in window) {
+            subBtns.forEach(btn => {
+                btn.addEventListener('click', async () => await subscribe(btn));
+            });
+
+        } else {
+            subBtns.forEach(btn => {
+                btn.textContent = 'Notifications not supported';
+                btn.disabled = true;
+            });
+        }
     });
 </script>
