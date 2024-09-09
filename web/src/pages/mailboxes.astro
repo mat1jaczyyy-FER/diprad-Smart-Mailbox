@@ -8,12 +8,25 @@ const user = getCurrentUser(Astro.cookies);
 if (!user) {
     return Astro.redirect('/');
 }
+
+const mailboxes = await db.request()
+    .input('IDuser', user.id)
+    .execute('sp_user_mailboxes');
 ---
 
 <Layout>
     <p>Welcome, {user.username}!</p>
     <h1>Your Smart Mailboxes</h1>
     <button id="enroll">Enroll new Smart Mailbox</button>
+    {mailboxes.recordset.map(mailbox => (
+        <div>
+            <h2>{mailbox.public_code}</h2>
+            <p>Last seen: {mailbox.last_seen?? "Never seen"}</p>
+            <p>Battery status: {mailbox.battery_low? "Low" : "Good"}</p>
+            <p>Last push: {mailbox.last_push?? "Never pushed"}</p>
+            <hr>
+        </div>
+    ))}
 </Layout>
 
 <style>
