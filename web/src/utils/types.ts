@@ -6,4 +6,5 @@ export interface Token {
 export interface Env {
     maxAge: number;
     cookieName: string;
+    secret: string;
 }

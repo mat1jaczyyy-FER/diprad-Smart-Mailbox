@@ -1,9 +1,11 @@
+import util from 'util';
+import crypto from 'crypto';
+const scryptAsync: (digest: Buffer, salt: Buffer, keylen: number) => Promise<Buffer> = util.promisify(crypto.scrypt);
+
 import jwt from "jsonwebtoken";
 import { db } from "./db";
+import env from "./env";
 import type { Token } from "./types";
-
-// todo hide better in env?
-const secret = "secret";
 
 function signToken(username: string, id: number, maxAge: number) {
     return jwt.sign(
@@ -12,28 +14,8 @@ function signToken(username: string, id: number, maxAge: number) {
             id: id,
             username: username
         } as Token,
-        secret
+        env.secret
     );
-}
-
-async function verifyUserID(username: string, password: string, isRegister: boolean): Promise<number | null> {
-    const result = await db.request()
-        .input('username', username)
-        .input('password', password)
-        .execute(isRegister? 'sp_user_register' : 'sp_user_login');
-    
-    const success = result.recordset[0]?.result?? 0;
-    return success? success : null;
-}
-
-export async function tryCreateToken(username: string, password: string, maxAge: number) {
-    const id = await verifyUserID(username, password, true);
-    return id? signToken(username, id, maxAge) : null;
-}
-
-export async function tryGetToken(username: string, password: string, maxAge: number) {
-    const id = await verifyUserID(username, password, false);
-    return id? signToken(username, id, maxAge) : null;
 }
 
 export function verifyToken(token?: string) {
@@ -45,7 +27,7 @@ export function verifyToken(token?: string) {
             return null;
     }
 
-    const data = jwt.verify(token, secret) as Token;
+    const data = jwt.verify(token, env.secret) as Token;
     if (!data.username)
         return null;
 
@@ -54,4 +36,49 @@ export function verifyToken(token?: string) {
         return null;
 
     return data;
+}
+
+async function hashPassword(password: string, salt: Buffer) {
+    const hmac = crypto.createHmac('sha256', env.secret);
+    hmac.update(password);
+    return await scryptAsync(hmac.digest(), salt, 64);
+}
+
+export async function tryCreateToken(username: string, password: string, maxAge: number) {
+    const salt = crypto.randomBytes(16);
+    const hash = await hashPassword(password, salt);
+
+    const result = await db.request()
+        .input('username', username)
+        .input('salt', salt)
+        .input('hash', hash)
+        .execute('sp_user_register');
+    
+    const id: number = result.recordset[0]?.result?? 0;
+
+    if (!id)
+        return null;
+
+    return signToken(username, id, maxAge);
+}
+
+export async function tryGetToken(username: string, password: string, maxAge: number) {
+    const result = await db.request()
+        .input('username', username)
+        .execute('sp_user_login');
+
+    if (!result.recordset[0]?.ID)
+        return null;
+
+    const { ID: id, salt, hash: hashdb } = result.recordset[0]?? {};
+
+    if (!id)
+        return null;
+    
+    const hash = await hashPassword(password, salt);
+
+    if (Buffer.compare(hash, hashdb) != 0)
+        return null;
+
+    return signToken(username, id, maxAge);
 }
