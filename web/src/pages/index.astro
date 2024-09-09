@@ -1,6 +1,13 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+import { getCurrentUser } from '../utils/auth';
 import env from "../utils/env";
+
+const user = getCurrentUser(Astro.cookies);
+if (user) {
+    return Astro.redirect('/mailboxes');
+}
 ---
 
 <Layout index>

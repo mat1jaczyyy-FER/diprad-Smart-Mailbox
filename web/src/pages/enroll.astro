@@ -1,5 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+import { getCurrentUser } from '../utils/auth';
+
+const user = getCurrentUser(Astro.cookies);
+if (!user) {
+    return Astro.redirect('/');
+}
 ---
 
 <Layout>
@@ -27,7 +34,8 @@ import Layout from '../layouts/Layout.astro';
 
         if (code) {
             const textbox = document.getElementById('public_code');
-            textbox?.value = code;
+            if (textbox)
+                textbox.value = code;
         }
 
         const form = document.getElementById('enroll-form');

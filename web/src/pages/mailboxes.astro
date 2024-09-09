@@ -1,15 +1,19 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import type { Token } from '../utils/types';
+
+import { getCurrentUser } from '../utils/auth';
+import { db } from '../utils/db';
+
+const user = getCurrentUser(Astro.cookies);
+if (!user) {
+    return Astro.redirect('/');
+}
 ---
 
 <Layout>
-    {(user: Token) => <>
-        <p>Welcome, {user.username}!</p>
-        <h1>Your Smart Mailboxes</h1>
-        <button id="enroll">Enroll new Smart Mailbox</button>
-
-    </>}
+    <p>Welcome, {user.username}!</p>
+    <h1>Your Smart Mailboxes</h1>
+    <button id="enroll">Enroll new Smart Mailbox</button>
 </Layout>
 
 <style>

@@ -2,7 +2,9 @@ import util from 'util';
 import crypto from 'crypto';
 const scryptAsync: (digest: Buffer, salt: Buffer, keylen: number) => Promise<Buffer> = util.promisify(crypto.scrypt);
 
+import type { AstroCookies } from 'astro';
 import jwt from "jsonwebtoken";
+
 import { db } from "./db";
 import env from "./env";
 import type { Token } from "./types";
@@ -18,7 +20,7 @@ function signToken(username: string, id: number, maxAge: number) {
     );
 }
 
-export function verifyToken(token?: string) {
+function verifyToken(token?: string) {
     switch (token) {
         case "undefined":
         case undefined:
@@ -81,4 +83,9 @@ export async function tryGetToken(username: string, password: string, maxAge: nu
         return null;
 
     return signToken(username, id, maxAge);
+}
+
+export function getCurrentUser(cookies: AstroCookies) {
+    const cookie = cookies.get(env.cookieName)?.value;
+    return verifyToken(cookie);
 }

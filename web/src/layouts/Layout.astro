@@ -1,7 +1,4 @@
 ---
-import env from "../utils/env";
-import { verifyToken } from "../utils/auth.ts";
-
 import LogoutButton from "../components/LogoutButton.astro";
 
 interface Props {
@@ -14,21 +11,6 @@ const sitename = "Smart Mailbox Portal";
 const title = Astro.props.title? `${Astro.props.title} – ${sitename}` : sitename;
 const description = Astro.props.description || "Smart Mailbox Portal is a web application for managing your smart mailbox.";
 const { index } = Astro.props;
-
-const cookie = Astro.cookies.get(env.cookieName)?.value;
-const user = verifyToken(cookie);
-
-const redirect = function() {
-    if (!index && !user) return "/";
-    if (index && user) return "/mailboxes";
-    return null;
-}();
-
-let html = '';
-if (!redirect) {
-    html = await Astro.slots.render('default', [user]);
-}
-
 ---
 
 <!DOCTYPE html>
@@ -55,31 +37,27 @@ if (!redirect) {
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
-
-        {redirect && <meta http-equiv="refresh" content={`0; url=${redirect}`} />}
     </head>
     <body>
-        {!redirect && <>
-            <div id="header" class={index? "index" : "home-link"} onclick={index? "" : `window.location='/';`}>
-                <img src="/res/logo.svg" alt="Logo">
-            </div>
-            <div id="content" class={index? "index" : ""}>
-                <Fragment set:html={html} />
-                {!index && <LogoutButton user={user!} />}
-            </div>
+        <div id="header" class={index? "index" : "home-link"} onclick={index? "" : `window.location='/';`}>
+            <img src="/res/logo.svg" alt="Logo">
+        </div>
+        <div id="content" class={index? "index" : ""}>
+            <slot />
+            {!index && <LogoutButton />}
+        </div>
 
-            {index && <script>
-                const updateHeaderScroll = function () {
-                    const header = document.getElementById('header');
-                    
-                    if (header)
-                        header.style.height = `calc(20rem - ${window.scrollY}px)`;
-                }
+        {index && <script>
+            const updateHeaderScroll = function () {
+                const header = document.getElementById('header');
+                
+                if (header)
+                    header.style.height = `calc(20rem - ${window.scrollY}px)`;
+            }
 
-                window.onscroll = updateHeaderScroll;
-                updateHeaderScroll();
-            </script>}
-        </>}
+            window.onscroll = updateHeaderScroll;
+            updateHeaderScroll();
+        </script>}
     </body>
 </html>
 

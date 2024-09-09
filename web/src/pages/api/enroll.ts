@@ -1,13 +1,11 @@
 import type { APIRoute } from 'astro';
 
 import { db } from "../../utils/db";
-import env from "../../utils/env";
-import { verifyToken } from '../../utils/auth';
+import { getCurrentUser } from '../../utils/auth';
 
 export const POST: APIRoute = async ({cookies, request}) => {
     const req = await request.json();
-    const cookie = cookies.get(env.cookieName)?.value;
-    const user = verifyToken(cookie);
+    const user = getCurrentUser(cookies);
 
     if (!user) {
         return new Response(null, { status: 401 });

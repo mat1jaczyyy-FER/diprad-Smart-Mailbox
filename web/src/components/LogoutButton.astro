@@ -1,15 +1,12 @@
 ---
-import type { Token } from '../utils/types';
+import { getCurrentUser } from "../utils/auth";
 
-interface Props {
-    user: Token;
-}
-
-const { user } = Astro.props;
+const user = getCurrentUser(Astro.cookies);
+const username = user? user.username : "NOT LOGGED IN";
 ---
 
 <div>
-    <span>Logged in as {user.username}</span>
+    <span>Logged in as {username}</span>
     <button id="logoutBtn">Logout</button>
 </div>
 
