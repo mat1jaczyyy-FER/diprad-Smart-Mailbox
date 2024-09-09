@@ -3,9 +3,13 @@ import Layout from '../layouts/Layout.astro';
 
 import { getCurrentUser } from '../utils/auth';
 
+const url = new URL(Astro.request.url);
+const params = new URLSearchParams(url.search);
+const code = params.get('id');
+
 const user = getCurrentUser(Astro.cookies);
 if (!user) {
-    return Astro.redirect('/');
+    return Astro.redirect('/' + (code ? `?enroll=${code}` : ''));
 }
 ---
 
@@ -14,7 +18,7 @@ if (!user) {
     <form id="enroll-form">
         <div>
             <label for="public_code">Enter the 7-character code on the back of your Smart Mailbox</label>
-            <input type="text" id="public_code" name="public_code" maxlength=7 required>
+            <input type="text" id="public_code" name="public_code" maxlength=7 value={code} required>
         </div>
         <div>
             <button type="submit">Enroll</button>
@@ -29,15 +33,6 @@ if (!user) {
 
 <script is:inline>
     document.addEventListener("DOMContentLoaded", () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get('code');
-
-        if (code) {
-            const textbox = document.getElementById('public_code');
-            if (textbox)
-                textbox.value = code;
-        }
-
         const form = document.getElementById('enroll-form');
         const message = document.getElementById('enroll-message');
 

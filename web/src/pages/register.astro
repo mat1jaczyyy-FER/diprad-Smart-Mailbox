@@ -1,0 +1,7 @@
+---
+const url = new URL(Astro.request.url);
+const newUrl = new URL('/enroll', url.origin);
+newUrl.search = url.search;
+
+return Astro.redirect(newUrl.toString());
+---

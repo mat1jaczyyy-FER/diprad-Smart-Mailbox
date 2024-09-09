@@ -8,6 +8,10 @@ const user = getCurrentUser(Astro.cookies);
 if (user) {
     return Astro.redirect('/mailboxes');
 }
+
+const url = new URL(Astro.request.url);
+const params = new URLSearchParams(url.search);
+const enroll_code = params.get('enroll');
 ---
 
 <Layout index>
@@ -55,7 +59,8 @@ if (user) {
 
 <script define:vars={{
     cookieName: env.cookieName,
-    maxAge: env.maxAge
+    maxAge: env.maxAge,
+    enroll_code,
 }} is:inline>
     async function submit(form, message, action, text) {
         const inputs = form.querySelectorAll('input, button');
@@ -108,7 +113,9 @@ if (user) {
 
         } finally {
             if (loggedIn) {
-                setTimeout(() => { window.location = '/'; }, 1000);
+                setTimeout(() => {
+                    window.location = enroll_code? `/enroll?id=${enroll_code}` : '/mailboxes';
+                }, 1000);
             } else {
                 inputs.forEach(e => e.disabled = false);
             }
