@@ -12,7 +12,11 @@ if (!user) {
 
 const mailboxes = await db.request()
     .input('IDuser', user.id)
-    .execute('sp_user_mailboxes');
+    .execute('sp_registrar_get');
+
+if (mailboxes.recordset.length === 0) {
+    return Astro.redirect('/add');
+}
 ---
 
 <Layout>
@@ -36,6 +40,10 @@ const mailboxes = await db.request()
                     />
                     Push notifications
                 </label>
+                <button type="button"
+                    data-public-code={mailbox.public_code}
+                    disabled
+                >Remove</button>
             </form>
             <hr />
         </div>
@@ -52,6 +60,7 @@ const mailboxes = await db.request()
     const add = document.getElementById('add');
     const pushBtn = document.getElementById('push');
     const cbs = document.querySelectorAll('input[type="checkbox"][data-public-code]');
+    const removes = document.querySelectorAll('button[type="button"][data-public-code]');
 
     function urlBase64ToUint8Array(base64String) {
         const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
@@ -298,6 +307,56 @@ const mailboxes = await db.request()
         }
     }
 
+    async function removeMailbox(remove) {
+        if (suspendEvents) return;
+
+        suspendEvents = true;
+        remove.disabled = true;
+        
+        let loggedOut = false;
+        let removed = false;
+
+        try {
+            const public_code = remove.dataset.publicCode;
+
+            const answer = confirm(`Are you sure you want to remove Smart Mailbox ${public_code}?`);
+            if (!answer) return;
+
+            const response = await fetch('/api/registrar/remove', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ public_code }),
+            });
+
+            if (response.ok) {
+                removed = true;
+
+            } else if (response.status === 401) {
+                pushBtn.textContent = 'You were logged out';
+                loggedOut = true;
+
+            } else {
+                throw new Error(response.statusText);
+            }
+
+        } catch (error) {
+            console.error('Failed to remove mailbox:', error);
+
+        } finally {
+            if (loggedOut) {
+                setTimeout(() => { window.location = '/'; }, 1000);
+            } else if (!removed) {
+                remove.disabled = false;
+                suspendEvents = false;
+            } else {
+                window.location.reload();
+            }
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', async () => {
         add?.addEventListener('click', () => {
             if (suspendEvents) return;
@@ -344,5 +403,10 @@ const mailboxes = await db.request()
             cb.dataset.initial = null;
             cb.addEventListener('change', async () => await subscribe(cb));
         });
+
+        removes.forEach(remove => {
+            remove.disabled = false;
+            remove.addEventListener('click', async () => await removeMailbox(remove));
+        })
     });
 </script>

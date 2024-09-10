@@ -14,11 +14,11 @@ export const POST: APIRoute = async ({cookies, request}) => {
     const result = await db.request()
         .input('IDuser', user.id)
         .input('public_code', req.public_code)
-        .execute('sp_user_add');
+        .execute('sp_registrar_remove');
 
     const success: number = result.recordset[0]?.result?? 0;
     if (!success) {
-        return new Response(null, { status: 406 });
+        return new Response(null, { status: 400 });
     }
 
     return new Response(null, { status: 200 });
