@@ -18,14 +18,16 @@ const mailboxes = await db.request()
 <Layout>
     <p>Welcome, {user.username}!</p>
     <h1>Your Smart Mailboxes</h1>
-    <button id="enroll">Enroll new Smart Mailbox</button>
+    <form autocomplete="off">
+        <button id="enroll">Enroll new Smart Mailbox</button>
+        <button id="push" disabled>Preparing push notifications...</button>
+    </form>
     {mailboxes.recordset.map(mailbox => (
-        <div class="mailbox">
+        <div class="mailbox" id={`_${mailbox.public_code}`}>
             <h2>{mailbox.public_code}</h2>
             <p>Last seen: {mailbox.last_seen?? "Never seen"}</p>
             <p>Battery status: {mailbox.battery_low? "Low" : "Good"}</p>
             <p>Last push: {mailbox.last_push?? "Never pushed"}</p>
-            <button data-public-code={mailbox.public_code}>Subscribe to notifications</button>
             <hr>
         </div>
     ))}
@@ -38,6 +40,9 @@ const mailboxes = await db.request()
 <script define:vars={{
     vapidKey: env.vapid.publicKey
 }} is:inline>
+    const enroll = document.getElementById('enroll');
+    const pushBtn = document.getElementById('push');
+
     function urlBase64ToUint8Array(base64String) {
         const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
         const base64 = (base64String + padding)
@@ -53,10 +58,19 @@ const mailboxes = await db.request()
         return outputArray;
     }
 
-    async function subscribe(btn) {
-        btn.disabled = true;
+    async function pushDelete() {
+        localStorage.removeItem('push');
+        
+        const registrations = await navigator.serviceWorker.getRegistrations();
 
-        const public_code = btn.dataset.publicCode;
+        for (const registration of registrations) {
+            await registration.unregister();
+        }
+    }
+
+    async function pushEnable() {
+        pushBtn.disabled = true;
+        pushBtn.textContent = 'Enabling push notifications...';
 
         let loggedOut = false;
         
@@ -68,56 +82,167 @@ const mailboxes = await db.request()
                 applicationServerKey: urlBase64ToUint8Array(vapidKey)
             });
             
-            const response = await fetch('/api/push/subscribe', {
+            const response = await fetch('/api/push/save', {
                 method: 'POST',
                 credentials: 'same-origin',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ public_code, subscription }),
+                body: JSON.stringify(subscription),
             });
 
             if (response.ok) {
-                console.log('Subscribed to notifications');
+                const IDpush = await response.json();
+                localStorage.setItem('push', JSON.stringify({ IDpush, subscription }));
+                
+                pushBtn.removeEventListener('click', pushDisable);
+                pushBtn.removeEventListener('click', pushEnable);
+                pushBtn.textContent = 'Disable push notifications';
+                pushBtn.addEventListener('click', pushDisable);
 
             } else if (response.status === 401) {
+                pushBtn.textContent = 'You were logged out';
                 loggedOut = true;
 
             } else {
-                console.error('Failed to subscribe:', response.statusText);
+                throw new Error(response.statusText);
             }
 
         } catch (error) {
-            console.error('Failed to subscribe:', error);
+            console.error('Failed to enable push notifications:', error);
+            pushBtn.textContent = 'Enable push notifications';
 
         } finally {
             if (loggedOut) {
                 setTimeout(() => { window.location = '/'; }, 1000);
             } else {
-                btn.disabled = false;
+                pushBtn.disabled = false;
             }
         }
     };
 
-    document.addEventListener('DOMContentLoaded', () => {
-        const enroll = document.getElementById('enroll');
+    async function pushDisable(updateUI = false) {
+        if (updateUI) {
+            pushBtn.disabled = true;
+            pushBtn.textContent = 'Disabling push notifications...';
+        }
+
+        let loggedOut = false;
         
+        try {
+            const IDpush = JSON.parse(localStorage.getItem('push')).IDpush;
+
+            const response = await fetch('/api/push/expire', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(IDpush),
+            });
+
+            if (response.ok) {
+                await pushDelete();
+                
+                if (updateUI) {
+                    pushBtn.removeEventListener('click', pushDisable);
+                    pushBtn.removeEventListener('click', pushEnable);
+                    pushBtn.textContent = 'Enable push notifications';
+                    pushBtn.addEventListener('click', pushEnable);
+                }
+
+            } else if (response.status === 401) {
+                pushBtn.textContent = 'You were logged out';
+                loggedOut = true;
+
+            } else {
+                throw new Error(response.statusText);
+            }
+
+        } catch (error) {
+            console.error('Failed to disable push notifications:', error);
+            if (updateUI) {
+                pushBtn.textContent = 'Disable push notifications';
+            }
+
+        } finally {
+            if (loggedOut) {
+                setTimeout(() => { window.location = '/'; }, 1000);
+            } else if (updateUI) {
+                pushBtn.disabled = false;
+            }
+        }
+    };
+
+    async function pushExists(subscription) {
+        let loggedOut = false;
+        
+        try {
+            const response = await fetch('/api/push/exists', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(subscription),
+            });
+
+            if (response.ok) {
+                const exists = await response.json();
+                if (!exists) await pushDelete();
+
+            } else if (response.status === 401) {
+                pushBtn.textContent = 'You were logged out';
+                loggedOut = true;
+
+            } else {
+                throw new Error(response.statusText);
+            }
+
+        } catch (error) {
+            console.error('Failed to check for push notifications:', error);
+
+        } finally {
+            if (loggedOut) {
+                setTimeout(() => { window.location = '/'; }, 1000);
+            }
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', async () => {
         enroll?.addEventListener('click', () => {
             window.location.href = '/enroll';
         });
 
-        const subBtns = document.querySelectorAll('.mailbox > button');
-
         if ('serviceWorker' in navigator && 'PushManager' in window) {
-            subBtns.forEach(btn => {
-                btn.addEventListener('click', async () => await subscribe(btn));
-            });
+            const pushStr = localStorage.getItem('push');
+
+            if (pushStr != null) {
+                const push = JSON.parse(pushStr);
+
+                const registration = await navigator.serviceWorker.getRegistration('/js/push.js');
+                const subscription = await registration?.pushManager.getSubscription();
+
+                if (!subscription || JSON.stringify(subscription) !== JSON.stringify(push.subscription)) {
+                    await pushDisable(false);
+                
+                } else {
+                    await pushExists(subscription);
+                }
+            }
+
+            if (localStorage.getItem('push') != null) {
+                pushBtn.textContent = 'Disable push notifications';
+                pushBtn.addEventListener('click', pushDisable);
+
+            } else {
+                pushBtn.textContent = 'Enable push notifications';
+                pushBtn.addEventListener('click', pushEnable);
+            }
+            pushBtn.disabled = false;
 
         } else {
-            subBtns.forEach(btn => {
-                btn.textContent = 'Notifications not supported';
-                btn.disabled = true;
-            });
+            pushBtn.textContent = 'Push notifications unsupported';
         }
     });
 </script>

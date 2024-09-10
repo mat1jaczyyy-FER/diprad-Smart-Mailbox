@@ -11,20 +11,18 @@ export const POST: APIRoute = async ({cookies, request}) => {
         return new Response(null, { status: 401 });
     }
     
-    if (!req.subscription || !req.subscription.endpoint) {
+    if (!req || !req.endpoint) {
         return new Response(null, { status: 400 });
     }
 
     const result = await db.request()
-        .input('IDuser', user.id)
-        .input('public_code', req.public_code)
-        .input('subscription', JSON.stringify(req.subscription))
-        .execute('sp_push_subscribe');
+        .input('subscription', JSON.stringify(req))
+        .execute('sp_push_save');
 
     const success: number = result.recordset[0]?.result?? 0;
     if (!success) {
         return new Response(null, { status: 406 });
     }
 
-    return new Response(success.toString());
+    return new Response(JSON.stringify(success));
 }

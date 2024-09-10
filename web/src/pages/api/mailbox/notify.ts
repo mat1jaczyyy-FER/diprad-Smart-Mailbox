@@ -28,8 +28,8 @@ export const POST: APIRoute = async ({ request }) => {
             ).catch(async (err: webpush.WebPushError) => {
                 if (err.statusCode === 404 || err.statusCode === 410) {
                     await db.request()
-                        .input('IDsubscription', i.IDsubscription)
-                        .execute('sp_push_expired');
+                        .input('IDpush', i.IDpush)
+                        .execute('sp_push_expire');
                 } else {
                     throw err;
                 }

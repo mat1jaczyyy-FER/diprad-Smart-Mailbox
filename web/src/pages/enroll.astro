@@ -84,7 +84,7 @@ if (!user) {
                 if (loggedOut) {
                     setTimeout(() => { window.location = '/'; }, 1000);
                 } else if (enrolled) {
-                    setTimeout(() => { window.location = '/mailboxes'; }, 1000);
+                    setTimeout(() => { window.location = `/mailboxes#_${public_code}`; }, 1000);
                 } else {
                     inputs.forEach(e => e.disabled = false);
                 }
