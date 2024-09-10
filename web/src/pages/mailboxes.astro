@@ -85,7 +85,7 @@ const mailboxes = await db.request()
 
         suspendEvents = true;
         pushBtn.disabled = true;
-        pushBtn.textContent = 'Enabling push notifications...';
+        pushBtn.textContent = 'Allowing push notifications...';
 
         let loggedOut = false;
         
@@ -145,7 +145,7 @@ const mailboxes = await db.request()
 
             suspendEvents = true;
             pushBtn.disabled = true;
-            pushBtn.textContent = 'Disabling push notifications...';
+            pushBtn.textContent = 'Disallowing push notifications...';
         }
 
         let loggedOut = false;
@@ -325,8 +325,6 @@ const mailboxes = await db.request()
                 cbs.forEach(cb => {
                     cb.checked = cb.dataset.initial === 'true';
                     cb.disabled = false;
-
-                    cb.addEventListener('change', async () => await subscribe(cb));
                 });
 
                 pushBtn.textContent = 'Disallow push notifications';
@@ -342,6 +340,9 @@ const mailboxes = await db.request()
             pushBtn.textContent = 'Push notifications unsupported';
         }
 
-        cbs.forEach(cb => cb.dataset.initial = null);
+        cbs.forEach(cb => {
+            cb.dataset.initial = null;
+            cb.addEventListener('change', async () => await subscribe(cb));
+        });
     });
 </script>
