@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 
-import { db } from "../../utils/db";
-import { getCurrentUser } from '../../utils/auth';
+import { db } from "../../../utils/db";
+import { getCurrentUser } from '../../../utils/auth';
 
 export const POST: APIRoute = async ({cookies, request}) => {
     const req = await request.json();
@@ -14,7 +14,7 @@ export const POST: APIRoute = async ({cookies, request}) => {
     const result = await db.request()
         .input('IDuser', user.id)
         .input('public_code', req.public_code)
-        .execute('sp_enroll');
+        .execute('sp_user_enroll');
 
     const success: number = result.recordset[0]?.result?? 0;
     if (!success) {

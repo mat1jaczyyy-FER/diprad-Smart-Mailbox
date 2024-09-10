@@ -16,21 +16,30 @@ const mailboxes = await db.request()
 ---
 
 <Layout>
-    <p>Welcome, {user.username}!</p>
     <h1>Your Smart Mailboxes</h1>
     <form autocomplete="off">
-        <button id="enroll">Enroll new Smart Mailbox</button>
-        <button id="push" disabled>Preparing push notifications...</button>
+        <button id="enroll" type="button">Enroll new Smart Mailbox</button>
+        <button id="push" type="button" disabled>Preparing push notifications...</button>
     </form>
-    {mailboxes.recordset.map(mailbox => (
+    {mailboxes.recordset.map(mailbox =>
         <div class="mailbox" id={`_${mailbox.public_code}`}>
             <h2>{mailbox.public_code}</h2>
             <p>Last seen: {mailbox.last_seen?? "Never seen"}</p>
             <p>Battery status: {mailbox.battery_low? "Low" : "Good"}</p>
             <p>Last push: {mailbox.last_push?? "Never pushed"}</p>
-            <hr>
+            <form autocomplete="off">
+                <label>
+                    <input type="checkbox"
+                        data-public-code={mailbox.public_code}
+                        data-initial={mailbox.subscribed? mailbox.subscribed != 0 : false}
+                        disabled
+                    />
+                    Push notifications
+                </label>
+            </form>
+            <hr />
         </div>
-    ))}
+    )}
 </Layout>
 
 <style>
@@ -42,6 +51,7 @@ const mailboxes = await db.request()
 }} is:inline>
     const enroll = document.getElementById('enroll');
     const pushBtn = document.getElementById('push');
+    const cbs = document.querySelectorAll('input[type="checkbox"][data-public-code]');
 
     function urlBase64ToUint8Array(base64String) {
         const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
@@ -58,6 +68,8 @@ const mailboxes = await db.request()
         return outputArray;
     }
 
+    let suspendEvents = false;
+
     async function pushDelete() {
         localStorage.removeItem('push');
         
@@ -68,7 +80,10 @@ const mailboxes = await db.request()
         }
     }
 
-    async function pushEnable() {
+    async function pushAllow() {
+        if (suspendEvents) return;
+
+        suspendEvents = true;
         pushBtn.disabled = true;
         pushBtn.textContent = 'Enabling push notifications...';
 
@@ -95,10 +110,12 @@ const mailboxes = await db.request()
                 const IDpush = await response.json();
                 localStorage.setItem('push', JSON.stringify({ IDpush, subscription }));
                 
-                pushBtn.removeEventListener('click', pushDisable);
-                pushBtn.removeEventListener('click', pushEnable);
-                pushBtn.textContent = 'Disable push notifications';
-                pushBtn.addEventListener('click', pushDisable);
+                cbs.forEach(cb => cb.disabled = false);
+                
+                pushBtn.removeEventListener('click', pushDisallow);
+                pushBtn.removeEventListener('click', pushAllow);
+                pushBtn.textContent = 'Disallow push notifications';
+                pushBtn.addEventListener('click', pushDisallow);
 
             } else if (response.status === 401) {
                 pushBtn.textContent = 'You were logged out';
@@ -109,20 +126,24 @@ const mailboxes = await db.request()
             }
 
         } catch (error) {
-            console.error('Failed to enable push notifications:', error);
-            pushBtn.textContent = 'Enable push notifications';
+            console.error('Failed to allow push notifications:', error);
+            pushBtn.textContent = 'Allow push notifications';
 
         } finally {
             if (loggedOut) {
                 setTimeout(() => { window.location = '/'; }, 1000);
             } else {
                 pushBtn.disabled = false;
+                suspendEvents = false;
             }
         }
     };
 
-    async function pushDisable(updateUI = false) {
+    async function pushDisallow(updateUI = false) {
         if (updateUI) {
+            if (suspendEvents) return;
+
+            suspendEvents = true;
             pushBtn.disabled = true;
             pushBtn.textContent = 'Disabling push notifications...';
         }
@@ -145,10 +166,15 @@ const mailboxes = await db.request()
                 await pushDelete();
                 
                 if (updateUI) {
-                    pushBtn.removeEventListener('click', pushDisable);
-                    pushBtn.removeEventListener('click', pushEnable);
-                    pushBtn.textContent = 'Enable push notifications';
-                    pushBtn.addEventListener('click', pushEnable);
+                    cbs.forEach(cb => {
+                        cb.checked = false;
+                        cb.disabled = true;
+                    });
+
+                    pushBtn.removeEventListener('click', pushDisallow);
+                    pushBtn.removeEventListener('click', pushAllow);
+                    pushBtn.textContent = 'Allow push notifications';
+                    pushBtn.addEventListener('click', pushAllow);
                 }
 
             } else if (response.status === 401) {
@@ -160,9 +186,9 @@ const mailboxes = await db.request()
             }
 
         } catch (error) {
-            console.error('Failed to disable push notifications:', error);
+            console.error('Failed to disallow push notifications:', error);
             if (updateUI) {
-                pushBtn.textContent = 'Disable push notifications';
+                pushBtn.textContent = 'Disallow push notifications';
             }
 
         } finally {
@@ -170,6 +196,7 @@ const mailboxes = await db.request()
                 setTimeout(() => { window.location = '/'; }, 1000);
             } else if (updateUI) {
                 pushBtn.disabled = false;
+                suspendEvents = false;
             }
         }
     };
@@ -209,8 +236,71 @@ const mailboxes = await db.request()
         }
     };
 
+    let suspendCheckbox = false;
+    let wasDisabledCheckbox = false;
+
+    async function subscribe(cb) {
+        if (suspendCheckbox || wasDisabledCheckbox) return;
+
+        if (suspendEvents) {
+            wasDisabledCheckbox = true;
+            cb.checked = !cb.checked;
+            wasDisabledCheckbox = false;
+            return;
+        }
+
+        suspendEvents = true;
+        cb.disabled = true;
+        
+        suspendCheckbox = true;
+        let enabled = cb.checked;
+        cb.checked = !cb.checked;
+        suspendCheckbox = false;
+
+        let loggedOut = false;
+        
+        try {
+            const public_code = cb.dataset.publicCode;
+            const { IDpush } = JSON.parse(localStorage.getItem('push'));
+
+            const response = await fetch('/api/subscription/change', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ public_code, IDpush, enabled }),
+            });
+
+            if (response.ok) {
+                suspendCheckbox = true;
+                cb.checked = !cb.checked;
+                suspendCheckbox = false;
+
+            } else if (response.status === 401) {
+                pushBtn.textContent = 'You were logged out';
+                loggedOut = true;
+
+            } else {
+                throw new Error(response.statusText);
+            }
+
+        } catch (error) {
+            console.error('Failed to subscribe to push notification:', error);
+
+        } finally {
+            if (loggedOut) {
+                setTimeout(() => { window.location = '/'; }, 1000);
+            } else {
+                cb.disabled = false;
+                suspendEvents = false;
+            }
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', async () => {
         enroll?.addEventListener('click', () => {
+            if (suspendEvents) return;
             window.location.href = '/enroll';
         });
 
@@ -224,7 +314,7 @@ const mailboxes = await db.request()
                 const subscription = await registration?.pushManager.getSubscription();
 
                 if (!subscription || JSON.stringify(subscription) !== JSON.stringify(push.subscription)) {
-                    await pushDisable(false);
+                    await pushDisallow(false);
                 
                 } else {
                     await pushExists(subscription);
@@ -232,17 +322,26 @@ const mailboxes = await db.request()
             }
 
             if (localStorage.getItem('push') != null) {
-                pushBtn.textContent = 'Disable push notifications';
-                pushBtn.addEventListener('click', pushDisable);
+                cbs.forEach(cb => {
+                    cb.checked = cb.dataset.initial === 'true';
+                    cb.disabled = false;
+
+                    cb.addEventListener('change', async () => await subscribe(cb));
+                });
+
+                pushBtn.textContent = 'Disallow push notifications';
+                pushBtn.addEventListener('click', pushDisallow);
 
             } else {
-                pushBtn.textContent = 'Enable push notifications';
-                pushBtn.addEventListener('click', pushEnable);
+                pushBtn.textContent = 'Allow push notifications';
+                pushBtn.addEventListener('click', pushAllow);
             }
             pushBtn.disabled = false;
 
         } else {
             pushBtn.textContent = 'Push notifications unsupported';
         }
+
+        cbs.forEach(cb => cb.dataset.initial = null);
     });
 </script>
