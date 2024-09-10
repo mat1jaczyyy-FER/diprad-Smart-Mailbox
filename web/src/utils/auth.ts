@@ -1,6 +1,6 @@
 import util from 'util';
 import crypto from 'crypto';
-const scryptAsync: (digest: Buffer, salt: Buffer, keylen: number) => Promise<Buffer> = util.promisify(crypto.scrypt);
+const scryptAsync: (digest: Uint8Array, salt: Uint8Array, keylen: number) => Promise<Buffer> = util.promisify(crypto.scrypt);
 
 import type { AstroCookies } from 'astro';
 import jwt from "jsonwebtoken";
@@ -49,7 +49,12 @@ function verifyToken(token?: string) {
 async function hashPassword(password: string, salt: Buffer) {
     const hmac = crypto.createHmac('sha256', env.authPepper);
     hmac.update(password);
-    return await scryptAsync(hmac.digest(), salt, 64);
+
+    return await scryptAsync(
+        hmac.digest() as unknown as Uint8Array,
+        salt as unknown as Uint8Array,
+        64
+    );
 }
 
 export async function tryCreateToken(username: string, password: string, maxAge: number) {
@@ -78,14 +83,14 @@ export async function tryGetToken(username: string, password: string, maxAge: nu
     if (!result.recordset[0]?.ID)
         return null;
 
-    const { ID: id, salt, hash: hashdb } = result.recordset[0]?? {};
+    const { ID: id, salt, hash: hashdb }: { ID: number, salt: Buffer, hash: Buffer } = result.recordset[0]?? {};
 
     if (!id)
         return null;
     
     const hash = await hashPassword(password, salt);
 
-    if (Buffer.compare(hash, hashdb) != 0)
+    if (Buffer.compare(hash as unknown as Uint8Array, hashdb as unknown as Uint8Array) != 0)
         return null;
 
     return signToken(username, id, maxAge);

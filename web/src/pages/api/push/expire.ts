@@ -15,7 +15,7 @@ export const POST: APIRoute = async ({cookies, request}) => {
         return new Response(null, { status: 400 });
     }
 
-    const result = await db.request()
+    await db.request()
         .input('IDpush', IDpush)
         .execute('sp_push_expire');
 
