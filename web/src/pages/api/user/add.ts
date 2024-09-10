@@ -14,7 +14,7 @@ export const POST: APIRoute = async ({cookies, request}) => {
     const result = await db.request()
         .input('IDuser', user.id)
         .input('public_code', req.public_code)
-        .execute('sp_user_enroll');
+        .execute('sp_user_add');
 
     const success: number = result.recordset[0]?.result?? 0;
     if (!success) {

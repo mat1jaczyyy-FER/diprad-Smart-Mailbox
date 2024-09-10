@@ -18,7 +18,7 @@ const mailboxes = await db.request()
 <Layout>
     <h1>Your Smart Mailboxes</h1>
     <form autocomplete="off">
-        <button id="enroll" type="button">Enroll new Smart Mailbox</button>
+        <button id="add" type="button">Add new Smart Mailbox</button>
         <button id="push" type="button" disabled>Preparing push notifications...</button>
     </form>
     {mailboxes.recordset.map(mailbox =>
@@ -49,7 +49,7 @@ const mailboxes = await db.request()
 <script define:vars={{
     vapidKey: env.vapid.publicKey
 }} is:inline>
-    const enroll = document.getElementById('enroll');
+    const add = document.getElementById('add');
     const pushBtn = document.getElementById('push');
     const cbs = document.querySelectorAll('input[type="checkbox"][data-public-code]');
 
@@ -299,9 +299,9 @@ const mailboxes = await db.request()
     }
 
     document.addEventListener('DOMContentLoaded', async () => {
-        enroll?.addEventListener('click', () => {
+        add?.addEventListener('click', () => {
             if (suspendEvents) return;
-            window.location.href = '/enroll';
+            window.location.href = '/add';
         });
 
         if ('serviceWorker' in navigator && 'PushManager' in window) {

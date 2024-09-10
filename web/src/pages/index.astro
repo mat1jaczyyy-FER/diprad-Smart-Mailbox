@@ -11,7 +11,7 @@ if (user) {
 
 const url = new URL(Astro.request.url);
 const params = new URLSearchParams(url.search);
-const enroll_code = params.get('enroll');
+const add_code = params.get('add');
 ---
 
 <Layout index>
@@ -60,7 +60,7 @@ const enroll_code = params.get('enroll');
 <script define:vars={{
     cookieName: env.cookieName,
     maxAge: env.maxAge,
-    enroll_code,
+    add_code
 }} is:inline>
     async function submit(form, message, action, text) {
         const inputs = form.querySelectorAll('input, button');
@@ -114,7 +114,7 @@ const enroll_code = params.get('enroll');
         } finally {
             if (loggedIn) {
                 setTimeout(() => {
-                    window.location = enroll_code? `/enroll?id=${enroll_code}` : '/mailboxes';
+                    window.location = add_code? `/add?id=${add_code}` : '/mailboxes';
                 }, 1000);
             } else {
                 inputs.forEach(e => e.disabled = false);

@@ -1,0 +1,186 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+import { getCurrentUser } from '../utils/auth';
+
+const url = new URL(Astro.request.url);
+const params = new URLSearchParams(url.search);
+const code = params.get('id');
+
+const user = getCurrentUser(Astro.cookies);
+if (!user) {
+    return Astro.redirect('/' + (code? `?add=${code}` : ''));
+}
+---
+
+<Layout>
+    <h1>Add new Smart Mailbox</h1>
+    <form id="add-form">
+        <label>First, connect your Smart Mailbox to your local Wi‑Fi network by scanning the Step 1 QR code on the back of your Smart Mailbox with your Android smartphone.</label>
+        <div id="qr-input" style={code? `display: none;` : null}>
+            <label>Then, scan the Step 2 QR code on the back of your Smart Mailbox to add it to your account.</label>
+            <div id="qr-reader"></div>
+            <a id="want-text" href="#">...or enter the 7-character code manually</a>
+        </div>
+        <div id="qr-scanned" style={code? null : `display: none;`}>
+            <label>Are you sure you want to add Smart Mailbox:</label>
+            <div id="scanned-code">{code? code : null}</div>
+            <a id="want-qr" href="#">Rescan QR code</a>
+            <button type="submit">Add Smart Mailbox</button>
+        </div>
+        <div id="text-input" style="display: none;">
+            <label>Then, enter the 7-character code on the back of your Smart Mailbox to add it to your account.</label>
+            <input type="text" name="public_code" maxlength=7 value={code} required>
+            <a id="want-qr2" href="#">...or scan the QR code</a>
+            <button type="submit">Add Smart Mailbox</button>
+        </div>
+        <div id="add-message"></div>
+    </form>
+</Layout>
+
+<style>
+    #qr-reader {
+        width: 80%;
+        margin: 0 auto;
+    }
+</style>
+
+<script>
+    import { Html5Qrcode, Html5QrcodeSupportedFormats } from 'html5-qrcode';
+
+    const scanner = new Html5Qrcode(
+        "qr-reader",
+        { 
+            verbose: false,
+            formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE]
+        }
+    );
+
+    const wantQR = document.getElementById('want-qr')!;
+    const wantQR2 = document.getElementById('want-qr2')!;
+    const wantText = document.getElementById('want-text')!;
+
+    const QRInput = document.getElementById('qr-input')!;
+    const QRScanned = document.getElementById('qr-scanned')!;
+    const textInput = document.getElementById('text-input')!;
+
+    const public_code = document.querySelector('input[name="public_code"]')! as HTMLInputElement;
+    const scanned_code = document.getElementById('scanned-code')!;
+
+    const step1 = /^DPP:.*I:smart-mailbox;.*;;$/;
+    const step2 = /^https:\/\/smart-mailbox.mat1jaczyyy.com\/register\?id=([A-Z0-9]{7})$/;
+    let step1seen = false;
+
+    async function start() {
+        await scanner.start(
+            { facingMode: "environment" },
+            {
+                fps: 2,
+                qrbox: (w, h) => {
+                    const size = Math.floor(Math.min(w, h) * 0.75)
+                    return { width: size, height: size };
+                }
+            },
+            async (text) => {
+                if (!step1seen && step1.test(text)) {
+                    step1seen = true;
+                    alert('Step 1 QR code detected. Please scan this QR code with your Android smartphone camera instead.');
+                    return;
+                }
+                
+                const code = step2.exec(text);
+                if (!code) return;
+
+                public_code.value = code[1];
+                scanned_code.textContent = code[1];
+                
+                switchTo(QRScanned);
+            },
+            undefined
+        );
+    }
+
+    async function switchTo(to?: HTMLElement, e?: MouseEvent) {
+        e?.preventDefault();
+        
+        QRInput.style.display = to == QRInput? '' : 'none';
+        QRScanned.style.display = to == QRScanned? '' : 'none';
+        textInput.style.display = to == textInput? '' : 'none';
+        
+        if (to == QRInput) {
+            await start();
+        } else {
+            await scanner.stop();
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        wantQR?.addEventListener('click', async e => switchTo(QRInput, e));
+        wantQR2?.addEventListener('click', async e => switchTo(QRInput, e));
+        wantText?.addEventListener('click', async e => switchTo(textInput, e));
+
+        if (QRInput.style.display == '') start();
+    });
+</script>
+
+<script is:inline>
+    document.addEventListener("DOMContentLoaded", () => {
+        const form = document.getElementById('add-form');
+        const message = document.getElementById('add-message');
+
+        form?.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const inputs = form.querySelectorAll('input, button');
+            inputs.forEach(e => e.disabled = true);
+
+            message.textContent = '';
+
+            const public_code = (form.querySelector('input[name="public_code"]')).value;
+
+            let added = false;
+            let loggedOut = false;
+            
+            try {
+                const response = await fetch('/api/user/add', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ public_code }),
+                });
+
+                if (response.ok) {
+                    message.textContent = 'Added successfully!';
+                    message.style.color = 'green';
+
+                    added = true;
+
+                } else if (response.status === 401) {
+                    message.textContent = 'You were logged out. Please log in again.';
+                    message.style.color = 'red';
+
+                    loggedOut = true;
+
+                } else {
+                    message.textContent = 'Something seems wrong. Please try again.';
+                    message.style.color = 'red';
+                }
+
+            } catch (error) {
+                message.textContent = 'An error occurred. Please try again.';
+                message.style.color = 'red';
+
+            } finally {
+                if (loggedOut) {
+                    setTimeout(() => { window.location = '/'; }, 1000);
+                } else if (added) {
+                    setTimeout(() => { window.location = `/mailboxes#_${public_code}`; }, 1000);
+                } else {
+                    inputs.forEach(e => e.disabled = false);
+                }
+            }
+        });
+    });
+</script>
