@@ -4,6 +4,7 @@ import Layout from '../layouts/Layout.astro';
 import { getCurrentUser } from '../utils/auth';
 import { db } from '../utils/db';
 import env from "../utils/env";
+import { timeAgo } from "../utils/timeago";
 
 const user = getCurrentUser(Astro.cookies);
 if (!user) {
@@ -21,37 +22,96 @@ if (mailboxes.recordset.length === 0) {
 
 <Layout>
     <h1>Your Smart Mailboxes</h1>
-    <form autocomplete="off">
-        <button id="add" type="button">Add new Smart Mailbox</button>
-        <button id="push" type="button" disabled>Preparing push notifications...</button>
+    <form id="top" autocomplete="off">
+        <button id="add" type="button">Add&nbsp;new Smart&nbsp;Mailbox</button>
+        <button id="push" type="button" disabled>Preparing&nbsp;push notifications...</button>
     </form>
-    {mailboxes.recordset.map(mailbox =>
-        <div class="mailbox" id={`_${mailbox.public_code}`}>
-            <h2>{mailbox.public_code}</h2>
-            <p>Last seen: {mailbox.last_seen?? "Never seen"}</p>
-            <p>Battery status: {mailbox.battery_low? "Low" : "Good"}</p>
-            <p>Last push: {mailbox.last_push?? "Never pushed"}</p>
-            <form autocomplete="off">
-                <label>
-                    <input type="checkbox"
+    <div id="mailboxes">
+        {mailboxes.recordset.map(mailbox =>
+            <div class="thing" id={`_${mailbox.public_code}`}>
+                <div class="row">
+                    <h2>{mailbox.public_code}</h2>
+                    <div style="text-align: right;">
+                        <span style={mailbox.battery_low? "color: red;" : null}>Battery {mailbox.battery_low? "Low" : "Good"}</span>
+                        <br />
+                        <span>{mailbox.last_seen? timeAgo.format(mailbox.last_seen) : "Never seen"}</span>
+                    </div>
+                </div>
+                <form class="row" autocomplete="off">
+                    <div class="checkbox-container">
+                        <label class="checkbox-label">
+                            <input type="checkbox"
+                                data-public-code={mailbox.public_code}
+                                data-initial={(mailbox.subscribed? mailbox.subscribed != 0 : false).toString()}
+                                disabled
+                            /><span>Push notifications</span>
+                        </label>
+                        <span>{mailbox.last_push? timeAgo.format(mailbox.last_push) : "Never pushed"}</span>
+                    </div>
+                    <button type="button"
                         data-public-code={mailbox.public_code}
-                        data-initial={mailbox.subscribed? mailbox.subscribed != 0 : false}
                         disabled
-                    />
-                    Push notifications
-                </label>
-                <button type="button"
-                    data-public-code={mailbox.public_code}
-                    disabled
-                >Remove</button>
-            </form>
-            <hr />
-        </div>
-    )}
+                    >Remove</button>
+                </form>
+            </div>
+        )}
+    </div>
 </Layout>
 
 <style>
+    h1 {
+        margin-top: 2rem;
+    }
     
+    #top {
+        display: flex;
+        justify-content: space-around;
+        margin-inline: 2rem;
+        margin-bottom: 1rem;
+        gap: 1rem;
+    }
+
+    #mailboxes {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex-grow: 1;
+        gap: 0.66rem;
+    }
+
+    .thing {
+        padding: 1rem;
+        margin: 0;
+    }
+
+    .row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.6rem;
+    }
+
+    h2 {
+        margin-block: 0;
+    }
+
+    .checkbox-container {
+        text-align: left;
+    }
+
+    .checkbox-container > span {
+        display: block;
+        margin-left: 32px;
+        transform: translateY(-3px);
+    }
+
+    .checkbox-label {
+        margin-bottom: 0;
+    }
+
+    .checkbox-label > * {
+        vertical-align: middle;
+    }
 </style>
 
 <script define:vars={{
@@ -94,7 +154,7 @@ if (mailboxes.recordset.length === 0) {
 
         suspendEvents = true;
         pushBtn.disabled = true;
-        pushBtn.textContent = 'Allowing push notifications...';
+        pushBtn.textContent = 'Allowing\u00a0push notifications...';
 
         let loggedOut = false;
         
@@ -123,11 +183,11 @@ if (mailboxes.recordset.length === 0) {
                 
                 pushBtn.removeEventListener('click', pushDisallow);
                 pushBtn.removeEventListener('click', pushAllow);
-                pushBtn.textContent = 'Disallow push notifications';
+                pushBtn.textContent = 'Disallow\u00a0push notifications';
                 pushBtn.addEventListener('click', pushDisallow);
 
             } else if (response.status === 401) {
-                pushBtn.textContent = 'You were logged out';
+                pushBtn.textContent = 'You\u00a0were logged\u00a0out';
                 loggedOut = true;
 
             } else {
@@ -136,7 +196,7 @@ if (mailboxes.recordset.length === 0) {
 
         } catch (error) {
             console.error('Failed to allow push notifications:', error);
-            pushBtn.textContent = 'Allow push notifications';
+            pushBtn.textContent = 'Allow\u00a0push notifications';
 
         } finally {
             if (loggedOut) {
@@ -154,7 +214,7 @@ if (mailboxes.recordset.length === 0) {
 
             suspendEvents = true;
             pushBtn.disabled = true;
-            pushBtn.textContent = 'Disallowing push notifications...';
+            pushBtn.textContent = 'Disallowing\u00a0push notifications...';
         }
 
         let loggedOut = false;
@@ -182,12 +242,12 @@ if (mailboxes.recordset.length === 0) {
 
                     pushBtn.removeEventListener('click', pushDisallow);
                     pushBtn.removeEventListener('click', pushAllow);
-                    pushBtn.textContent = 'Allow push notifications';
+                    pushBtn.textContent = 'Allow\u00a0push notifications';
                     pushBtn.addEventListener('click', pushAllow);
                 }
 
             } else if (response.status === 401) {
-                pushBtn.textContent = 'You were logged out';
+                pushBtn.textContent = 'You\u00a0were logged\u00a0out';
                 loggedOut = true;
 
             } else {
@@ -197,7 +257,7 @@ if (mailboxes.recordset.length === 0) {
         } catch (error) {
             console.error('Failed to disallow push notifications:', error);
             if (updateUI) {
-                pushBtn.textContent = 'Disallow push notifications';
+                pushBtn.textContent = 'Disallow\u00a0push notifications';
             }
 
         } finally {
@@ -228,7 +288,7 @@ if (mailboxes.recordset.length === 0) {
                 if (!exists) await pushDelete();
 
             } else if (response.status === 401) {
-                pushBtn.textContent = 'You were logged out';
+                pushBtn.textContent = 'You\u00a0were logged\u00a0out';
                 loggedOut = true;
 
             } else {
@@ -287,7 +347,7 @@ if (mailboxes.recordset.length === 0) {
                 suspendCheckbox = false;
 
             } else if (response.status === 401) {
-                pushBtn.textContent = 'You were logged out';
+                pushBtn.textContent = 'You\u00a0were logged\u00a0out';
                 loggedOut = true;
 
             } else {
@@ -335,7 +395,7 @@ if (mailboxes.recordset.length === 0) {
                 removed = true;
 
             } else if (response.status === 401) {
-                pushBtn.textContent = 'You were logged out';
+                pushBtn.textContent = 'You\u00a0were logged\u00a0out';
                 loggedOut = true;
 
             } else {
@@ -382,21 +442,22 @@ if (mailboxes.recordset.length === 0) {
 
             if (localStorage.getItem('push') != null) {
                 cbs.forEach(cb => {
+                    console.log(cb.dataset);
                     cb.checked = cb.dataset.initial === 'true';
                     cb.disabled = false;
                 });
 
-                pushBtn.textContent = 'Disallow push notifications';
+                pushBtn.textContent = 'Disallow\u00a0push notifications';
                 pushBtn.addEventListener('click', pushDisallow);
 
             } else {
-                pushBtn.textContent = 'Allow push notifications';
+                pushBtn.textContent = 'Allow\u00a0push notifications';
                 pushBtn.addEventListener('click', pushAllow);
             }
             pushBtn.disabled = false;
 
         } else {
-            pushBtn.textContent = 'Push notifications unsupported';
+            pushBtn.textContent = 'Unsupported\u00a0push notifications';
         }
 
         cbs.forEach(cb => {

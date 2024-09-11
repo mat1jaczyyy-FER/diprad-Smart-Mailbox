@@ -5,10 +5,19 @@ const user = getCurrentUser(Astro.cookies);
 const username = user? user.username : "NOT LOGGED IN";
 ---
 
-<div>
-    <span>Logged in as {username}</span>
-    <button id="logoutBtn" type="button">Logout</button>
+<div class="logout">
+    <span>Logged in as {username}</span><button id="logoutBtn" type="button">Logout</button>
 </div>
+
+<style>
+    .logout {
+        margin-top: 3rem;
+    }
+
+    #logoutBtn {
+        margin-left: 1rem;
+    }
+</style>
 
 <script is:inline>
     document.addEventListener('DOMContentLoaded', () => {

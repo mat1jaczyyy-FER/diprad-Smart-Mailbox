@@ -46,22 +46,18 @@ const { index } = Astro.props;
             <slot />
             {!index && <LogoutButton />}
         </div>
-
-        {index && <script>
-            const updateHeaderScroll = function () {
-                const header = document.getElementById('header');
-                
-                if (header)
-                    header.style.height = `calc(20rem - ${window.scrollY}px)`;
-            }
-
-            window.onscroll = updateHeaderScroll;
-            updateHeaderScroll();
-        </script>}
     </body>
 </html>
 
 <style is:global>
+    :root {
+        --bg: #111e33;
+        --fg: #eaeafa;
+        --accent: #df2820;
+        --accent-high: #f73127;
+        --thing: #1e2a3a;
+    }
+
     html, body {
         overscroll-behavior: none;
     }
@@ -69,8 +65,8 @@ const { index } = Astro.props;
     body {
         margin: 0;
         padding: 0;
-        background: #111e33;
-        color: #eaeafa;
+        background: var(--bg);
+        color: var(--fg);
 
         font-family: "Outfit", sans-serif;
         font-optical-sizing: auto;
@@ -78,8 +74,24 @@ const { index } = Astro.props;
     }
 
     a {
-        color: #df2820;
+        color: var(--accent);
         text-decoration: none;
+        font-size: 0.9rem;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+        margin-top: 0;
+        text-align: center;
+    }
+
+    h2 {
+        font-size: 2rem;
+        text-align: left;
     }
 
     #header {
@@ -92,10 +104,6 @@ const { index } = Astro.props;
         z-index: 1;
     }
 
-    #header.index {
-        height: 20rem;
-    }
-
     #header.home-link {   
         cursor: pointer;
     }
@@ -104,11 +112,12 @@ const { index } = Astro.props;
         display: block;
         margin: 0 auto;
         height: 100%;
+        max-width: 100%;
     }
 
     #content {
         padding-top: 5rem;
-        padding-bottom: 5rem;
+        padding-bottom: 1rem;
         margin-top: 1em;
         width: calc(575px + 6vw);
         max-width: 94vw;
@@ -116,8 +125,14 @@ const { index } = Astro.props;
         text-align: center;
     }
 
-    #content.index {
-        padding-top: 20rem;
+    @media (min-width: 520px) {
+        #header.index {
+            height: 8rem;
+        }
+
+        #content.index {
+            padding-top: 8rem;
+        }
     }
 
     @media print {
@@ -128,5 +143,106 @@ const { index } = Astro.props;
         #content {
             padding-top: 1rem;
         }
+    }
+
+    .thing {
+        background-color: var(--thing);
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        max-width: 450px;
+        width: -moz-available;
+        width: -webkit-fill-available;
+        margin: 0 auto;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+    }
+
+    input {
+        width: calc(100% - 1rem);
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 1rem;
+    }
+
+    input[type="text"], input[type="password"] {
+        background-color: #f9f9f9;
+        color: #333;
+    }
+
+    input:disabled, input[type="checkbox"]:checked:disabled {
+        background-color: #e0e0e0;
+        color: #a0a0a0;
+        cursor: not-allowed;
+        border: 1px solid #cccccc;
+    }
+
+    input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        accent-color: var(--accent);
+        cursor: pointer;
+        appearance: none;
+        border: 2px solid #ccc;
+        border-radius: 3px;
+        position: relative;
+        vertical-align: middle;
+        margin-right: 8px;
+    }
+    
+    input[type="checkbox"]:disabled {
+        background-color: #e0e0e080;
+    }
+
+    input[type="checkbox"]:checked {
+        background-color: var(--accent);
+        border-color: var(--accent);
+    }
+
+    input[type="checkbox"]:checked::before {
+        content: "✔";
+        color: var(--fg);
+        font-weight: bold;
+        position: absolute;
+        top: -1px;
+        left: 2px;
+        font-size: 14px;
+    }
+
+    button {
+        background-color: var(--accent);
+        color: var(--fg);
+        padding: 0.75rem;
+        border: none;
+        border-radius: 5px;
+        font-size: 1rem;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: var(--accent-high);
+    }
+
+    button:disabled {
+        background-color: #b0b0b0;
+        color: #ffffff;
+        cursor: not-allowed;
+    }
+
+    a:disabled {
+        pointer-events: none;
+        color: #b0b0b0;
+        text-decoration: none;
+    }
+
+    .err {
+        color: red;
+        margin-bottom: 1.5rem;
     }
 </style>
