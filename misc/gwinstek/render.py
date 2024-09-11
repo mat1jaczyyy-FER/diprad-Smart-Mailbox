@@ -1,6 +1,7 @@
 import os
 import csv
 import matplotlib.pyplot as plt
+from matplotlib import ticker
 import numpy as np
 
 to_watts=3.3
@@ -35,11 +36,21 @@ def plot_waveform(csv_file):
 
     plt.figure(figsize=(12, 4))
 
-    plt.plot(smoothed_x, smoothed_y, linewidth=0.3, color=color)
+    plt.plot(smoothed_x, smoothed_y, linewidth=1, color=color)
     plt.xlabel('Time [s]')
     plt.ylabel('Power draw [W]')
     plt.xticks(range(0, int(smoothed_x[-1]) + 2, 1))
     plt.grid(True)
+
+    plt.yscale('symlog', linthresh=0.2)
+    plt.xlim([0, 20])
+    plt.ylim([-0.01, 1.5])
+
+    plt.gca().yaxis.set_major_formatter(ticker.ScalarFormatter())
+    plt.gca().yaxis.get_major_formatter().set_useOffset(False)
+    plt.gca().yaxis.get_major_formatter().set_scientific(False)
+    plt.gca().yaxis.set_major_locator(ticker.FixedLocator([0, 0.2, 0.4, 0.6, 0.9, 1.2, 1.5]))
+    plt.gca().yaxis.set_minor_locator(ticker.AutoMinorLocator())
 
     plot_filename = name + '.svg'
     plt.savefig(plot_filename, format='svg')
