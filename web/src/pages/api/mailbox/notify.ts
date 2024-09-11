@@ -1,14 +1,7 @@
 import type { APIRoute } from "astro";
-import webpush from 'web-push';
 
 import { db } from "../../../utils/db";
-import env from "../../../utils/env";
-
-webpush.setVapidDetails(
-    'mailto:mat1jaczyyy@gmail.com',
-    env.vapid.publicKey,
-    env.vapid.privateKey
-);
+import webpush from "../../../utils/webpush";
 
 export const POST: APIRoute = async ({ request }) => {
     const req = await request.json();
