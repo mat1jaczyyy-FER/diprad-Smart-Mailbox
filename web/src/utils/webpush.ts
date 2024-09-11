@@ -1,5 +1,4 @@
 import webpush from 'web-push';
-import { db } from "./db";
 import env from "./env";
 
 webpush.setVapidDetails(
