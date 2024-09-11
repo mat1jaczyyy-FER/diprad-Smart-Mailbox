@@ -42,7 +42,6 @@ if (mailboxes.recordset.length === 0) {
                         <label class="checkbox-label">
                             <input type="checkbox"
                                 data-public-code={mailbox.public_code}
-                                data-initial={(mailbox.subscribed? mailbox.subscribed != 0 : false).toString()}
                                 disabled
                             /><span>Push notifications</span>
                         </label>
@@ -367,6 +366,44 @@ if (mailboxes.recordset.length === 0) {
         }
     }
 
+    async function subscriptionGetAll() {
+        let loggedOut = false;
+        
+        try {
+            const { IDpush } = JSON.parse(localStorage.getItem('push'));
+
+            const response = await fetch('/api/subscription/get', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ IDpush }),
+            });
+
+            if (response.ok) {
+                return await response.json();
+
+            } else if (response.status === 401) {
+                pushBtn.textContent = 'You\u00a0were logged\u00a0out';
+                loggedOut = true;
+
+            } else {
+                throw new Error(response.statusText);
+            }
+
+        } catch (error) {
+            console.error('Failed to get push notification subscription list:', error);
+
+        } finally {
+            if (loggedOut) {
+                setTimeout(() => { window.location = '/'; }, 1000);
+            }
+        }
+
+        return [];
+    }
+
     async function removeMailbox(remove) {
         if (suspendEvents) return;
 
@@ -441,9 +478,9 @@ if (mailboxes.recordset.length === 0) {
             }
 
             if (localStorage.getItem('push') != null) {
+                const activated = await subscriptionGetAll();
                 cbs.forEach(cb => {
-                    console.log(cb.dataset);
-                    cb.checked = cb.dataset.initial === 'true';
+                    cb.checked = activated.includes(cb.dataset.publicCode);
                     cb.disabled = false;
                 });
 
