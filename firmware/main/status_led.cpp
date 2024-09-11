@@ -45,7 +45,7 @@ void StatusLED::wifi_retrying() {
 
 void StatusLED::api_retrying() {
     //ESP_LOGI(TAG, "API Retrying");
-    this->set(255, 80, 0);
+    this->set(255, 30, 0);
 }
 
 void StatusLED::sleeping() {

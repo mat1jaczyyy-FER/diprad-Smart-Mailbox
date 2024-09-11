@@ -17,6 +17,8 @@
 #include "status_led.h"
 #include "battery.h"
 
+static const char* TAG = "MAIN";
+
 RTC_DATA_ATTR uint8_t first_boot = 1;
 RTC_DATA_ATTR uint8_t mail_state = 0;
 RTC_DATA_ATTR uint8_t mail_notify = 0;
@@ -61,22 +63,37 @@ extern "C" void app_main() {
             battery_state = battery_low;
         #endif
 
-        if (mail_notify
-            #if defined(CONFIG_USE_BATTERY_CHECK)
-                || battery_notify
-            #endif
-        ) {
-            wifi_start();
-            if (mail_notify && api_notify()) {
+        #ifdef CONFIG_TEST_DISABLE_NOTIFY
+            if (mail_notify) {
+                ESP_LOGW(TAG, "Mail detected!");
                 mail_notify = 0;
             }
             #if defined(CONFIG_USE_BATTERY_CHECK)
-                if (battery_notify && api_battery(battery_state)) {
+                if (battery_notify) {
+                    ESP_LOGW(TAG, "Battery is %s", battery_state? "low" : "good");
                     battery_notify = 0;
                 }
             #endif
-            wifi_stop();
-        }
+            ESP_LOGI(TAG, "");
+
+        #else
+            if (mail_notify
+                #if defined(CONFIG_USE_BATTERY_CHECK)
+                    || battery_notify
+                #endif
+            ) {
+                wifi_start();
+                if (mail_notify && api_notify()) {
+                    mail_notify = 0;
+                }
+                #if defined(CONFIG_USE_BATTERY_CHECK)
+                    if (battery_notify && api_battery(battery_state)) {
+                        battery_notify = 0;
+                    }
+                #endif
+                wifi_stop();
+            }
+        #endif
 
         status_led.sleeping();
         mailbox_sleep();

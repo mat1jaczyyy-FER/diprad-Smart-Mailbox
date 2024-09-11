@@ -81,7 +81,11 @@ uint32_t* api_config() {
         );
 
         uint8_t* config = decode_base64_http_response(res);
-        free(res);
+
+        if (res != NULL) {
+            free(res);
+            res = NULL;
+        }
 
         if (config != NULL) {
             status_led.active();
