@@ -1,0 +1,913 @@
+ESP-ROM:esp32c3-api1-20210207
+Build:Feb  7 2021
+rst:0x1 (POWERON),boot:0xc (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fcd5810,len:0x1684
+load:0x403cc710,len:0x934
+load:0x403ce710,len:0x2e74
+entry 0x403cc710
+I (30) boot: ESP-IDF v4.4.8 2nd stage bootloader
+I (30) boot: compile time 06:14:33
+I (30) boot: chip revision: v0.3
+I (32) boot.esp32c3: SPI Speed      : 80MHz
+I (37) boot.esp32c3: SPI Mode       : DIO
+I (42) boot.esp32c3: SPI Flash Size : 2MB
+I (46) boot: Enabling RNG early entropy source...        
+I (52) boot: Partition Table:
+I (55) boot: ## Label            Usage          Type ST Offset   Length
+I (63) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+I (70) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+I (78) boot:  2 factory          factory app      00 00 00010000 00100000
+I (85) boot: End of partition table
+I (89) esp_image: segment 0: paddr=00010020 vaddr=3c0b0020 size=1d370h (119664) map
+I (117) esp_image: segment 1: paddr=0002d398 vaddr=3fc91e00 size=024f0h (  9456) load
+I (119) esp_image: segment 2: paddr=0002f890 vaddr=40380000 size=00788h (  1928) load
+I (123) esp_image: segment 3: paddr=00030020 vaddr=42000020 size=ab2fch (701180) map
+I (243) esp_image: segment 4: paddr=000db324 vaddr=40380788 size=114f4h ( 70900) load
+I (256) esp_image: segment 5: paddr=000ec820 vaddr=50000010 size=00010h (    16) load
+I (262) boot: Loaded app from partition at offset 0x10000
+I (262) boot: Disabling RNG early entropy source...
+I (276) cpu_start: Unicore app
+I (276) cpu_start: Pro cpu up.
+I (286) cpu_start: Pro cpu start user code
+I (286) cpu_start: cpu freq: 160000000
+I (286) cpu_start: Application information:
+I (288) cpu_start: Project name:     smart-mailbox       
+I (294) cpu_start: App version:      367af33-dirty       
+I (299) cpu_start: Compile time:     Sep 15 2024 22:09:26
+I (305) cpu_start: ELF file SHA256:  90064d5a872616f8...
+I (311) cpu_start: ESP-IDF:          v4.4.8
+I (316) cpu_start: Min chip rev:     v0.3
+I (321) cpu_start: Max chip rev:     v1.99
+I (326) cpu_start: Chip rev:         v0.3
+I (331) heap_init: Initializing. RAM available for dynamic allocation:
+I (338) heap_init: At 3FC98A40 len 00043CD0 (271 KiB): DRAM
+I (344) heap_init: At 3FCDC710 len 00002950 (10 KiB): STACK/DRAM
+I (351) heap_init: At 50000030 len 00001FD0 (7 KiB): RTCRAM
+I (357) spi_flash: detected chip: generic
+I (362) spi_flash: flash io: dio
+W (366) spi_flash: Detected size(4096k) larger than the size in the binary image header(2048k). Using the size in 
+the binary image header.
+I (379) sleep: Configure to isolate all GPIO pins in sleep state
+I (385) sleep: Enable automatic switching of GPIO sleep configuration
+I (393) cpu_start: Starting scheduler.
+I (417) pp: pp rom version: 9387209
+I (417) net80211: net80211 rom version: 9387209
+I (427) wifi:wifi driver task: 3fca24ec, prio:23, stack:6656, core=0
+I (427) system_api: Base MAC address is not set
+I (427) system_api: read default base MAC address from EFUSE
+I (437) wifi:wifi firmware version: ff661c3
+I (437) wifi:wifi certification version: v7.0
+I (437) wifi:config NVS flash: enabled
+I (437) wifi:config nano formating: disabled
+I (447) wifi:Init data frame dynamic rx buffer num: 32   
+I (447) wifi:Init static rx mgmt buffer num: 5
+I (457) wifi:Init management short buffer num: 32
+I (457) wifi:Init dynamic tx buffer num: 32
+I (467) wifi:Init static tx FG buffer num: 2
+I (467) wifi:Init static rx buffer size: 1600
+I (467) wifi:Init static rx buffer num: 10
+I (477) wifi:Init dynamic rx buffer num: 32
+I (477) wifi_init: rx ba win: 6
+I (477) wifi_init: tcpip mbox: 32
+I (487) wifi_init: udp mbox: 6
+I (487) wifi_init: tcp mbox: 6
+I (497) wifi_init: tcp tx win: 5760
+I (497) wifi_init: tcp rx win: 5760
+I (497) wifi_init: tcp mss: 1440
+I (507) wifi_init: WiFi IRAM OP enabled
+I (507) wifi_init: WiFi RX IRAM OP enabled
+I (677) WiFi: DPP QRCode Ready
+I (677) gpio: GPIO[9]| InputEn: 0| OutputEn: 0| OpenDrain: 0| Pullup: 1| Pulldown: 0| Intr:0
+I (677) WiFi: WiFi starting
+I (687) phy_init: phy_version 1170,f4aea9b,Apr 30 2024,10:49:24
+I (727) wifi:mode : sta (84:f7:03:3f:13:50)
+I (727) wifi:enable tsf
+I (727) WiFi: Connecting to AP: mat1jaczyyy
+I (737) wifi:new:<5,0>, old:<1,0>, ap:<255,255>, sta:<5,0>, prof:1
+I (737) wifi:state: init -> auth (b0)
+I (747) wifi:state: auth -> assoc (0)
+I (747) wifi:state: assoc -> run (10)
+I (797) wifi:connected with mat1jaczyyy, aid = 2, channel 5, BW20, bssid = c2:d0:e6:72:3c:a4
+I (797) wifi:security: WPA2-PSK, phy: bgn, rssi: -42     
+I (807) wifi:pm start, type: 1
+
+I (807) wifi:set rx beacon pti, rx_bcn_pti: 0, bcn_timeout: 0, mt_pti: 25000, mt_time: 10000
+I (857) wifi:<ba-add>idx:0 (ifx:0, c2:d0:e6:72:3c:a4), tid:0, ssn:0, winSize:64
+I (897) wifi:AP's beacon interval = 102400 us, DTIM period = 2
+I (1817) esp_netif_handlers: sta ip: 192.168.164.32, mask: 255.255.255.0, gw: 192.168.164.42
+I (1817) WiFi: Connected to AP: mat1jaczyyy
+I (1817) HTTPS-Request: Allocating 57 bytes for full_url
+I (1827) HTTPS-Request: Allocating 281 bytes for req     
+I (1827) HTTPS-Request: POST https://smart-mailbox.mat1jaczyyy.com/api/mailbox/config
+I (1847) wifi:<ba-add>idx:1 (ifx:0, c2:d0:e6:72:3c:a4), tid:7, ssn:2, winSize:64
+I (3837) HTTPS-Request: Connection established...
+I (3837) HTTPS-Request: 280 bytes written
+I (3837) HTTPS-Request: Waiting for HTTPS response...
+I (3897) HTTPS-Request: 128 bytes read
+I (3897) HTTPS-Request: 50 bytes read
+I (3897) HTTPS-Request: 16 bytes read
+I (3907) HTTPS-Request: connection closed
+I (3907) API: Config received from server
+I (3917) wifi:state: run -> init (0)
+I (3917) wifi:pm stop, total sleep time: 2246836 us / 3111384 us
+
+I (3917) wifi:<ba-del>idx
+I (3927) wifi:<ba-del>idx
+I (3927) wifi:new:<5,0>, old:<5,0>, ap:<255,255>, sta:<5,0>, prof:1
+I (3967) wifi:flush txq
+I (3967) wifi:stop sw txq
+I (3967) wifi:lmac stop hw txq
+I (3967) WiFi: WiFi stopped
+I (5067) HC_SR04: roundtrip =>  55.93 mm, discarded      
+I (5117) HC_SR04: roundtrip =>  55.59 mm
+I (5167) HC_SR04: roundtrip =>  55.93 mm
+I (5217) HC_SR04: roundtrip =>  55.93 mm
+I (5267) HC_SR04: roundtrip =>  55.93 mm
+I (5317) HC_SR04: roundtrip =>  55.93 mm
+I (5367) HC_SR04: roundtrip =>  55.93 mm
+I (5417) HC_SR04: roundtrip =>  55.25 mm
+I (5467) HC_SR04: roundtrip =>  55.42 mm
+I (5517) HC_SR04: roundtrip =>  55.93 mm
+I (5567) HC_SR04: roundtrip =>  55.93 mm
+I (5617) HC_SR04: roundtrip =>  55.93 mm
+I (5667) HC_SR04: roundtrip =>  55.93 mm
+I (5717) HC_SR04: roundtrip =>  55.93 mm
+I (5767) HC_SR04: roundtrip =>  55.93 mm
+I (5817) HC_SR04: roundtrip =>  55.93 mm
+I (5867) HC_SR04: roundtrip =>  55.59 mm
+I (5917) HC_SR04: roundtrip =>  55.93 mm
+I (5967) HC_SR04: roundtrip =>  55.93 mm
+I (6017) HC_SR04: roundtrip =>  55.93 mm
+I (6067) HC_SR04: roundtrip =>  55.93 mm
+I (22517) HC_SR04: roundtrip =>  55.93 mm
+I (22567) HC_SR04: roundtrip =>  55.93 mm
+I (22617) HC_SR04: roundtrip =>  55.93 mm
+I (22667) HC_SR04: roundtrip =>  55.93 mm
+I (22717) HC_SR04: roundtrip =>  55.93 mm
+I (22767) MAIN: 
+I (22767) HC_SR04: roundtrip =>  55.42 mm, discarded     
+I (22817) HC_SR04: roundtrip =>  55.93 mm
+I (22867) HC_SR04: roundtrip =>  55.25 mm
+I (22917) HC_SR04: roundtrip =>  55.42 mm
+I (22967) HC_SR04: roundtrip =>  55.93 mm
+I (23017) HC_SR04: roundtrip =>  55.93 mm
+I (23067) HC_SR04: roundtrip =>  55.93 mm
+I (23117) HC_SR04: roundtrip =>  55.93 mm
+I (23167) HC_SR04: roundtrip =>  55.93 mm
+I (23217) HC_SR04: roundtrip =>  55.93 mm
+I (23267) HC_SR04: roundtrip =>  55.93 mm
+I (23317) HC_SR04: roundtrip =>  55.93 mm
+I (23367) HC_SR04: roundtrip =>  55.93 mm
+I (23417) HC_SR04: roundtrip =>  55.08 mm
+I (23467) HC_SR04: roundtrip =>  55.42 mm
+I (23517) HC_SR04: roundtrip =>  55.93 mm
+I (23567) HC_SR04: roundtrip =>  55.93 mm
+I (23617) HC_SR04: roundtrip =>  55.93 mm
+I (23667) HC_SR04: roundtrip =>  55.93 mm
+I (23717) HC_SR04: roundtrip =>  55.93 mm
+I (23767) HC_SR04: roundtrip =>  55.93 mm
+I (23817) HC_SR04: roundtrip =>  55.93 mm
+I (23867) MAIN: 
+I (23867) HC_SR04: roundtrip =>  55.08 mm, discarded     
+I (23917) HC_SR04: roundtrip =>  55.42 mm
+I (23967) HC_SR04: roundtrip =>  55.93 mm
+I (24017) HC_SR04: roundtrip =>  55.93 mm
+I (24067) HC_SR04: roundtrip =>  55.93 mm
+I (24117) HC_SR04: roundtrip =>  55.93 mm
+I (24167) HC_SR04: roundtrip =>  55.93 mm
+I (24217) HC_SR04: roundtrip =>  55.93 mm
+I (24267) HC_SR04: roundtrip =>  55.93 mm
+I (24317) HC_SR04: roundtrip =>  55.93 mm
+I (24367) HC_SR04: roundtrip =>  55.93 mm
+I (24417) HC_SR04: roundtrip =>  55.08 mm
+I (24467) HC_SR04: roundtrip =>  55.42 mm
+I (24517) HC_SR04: roundtrip =>  55.93 mm
+I (24567) HC_SR04: roundtrip =>  55.93 mm
+I (24617) HC_SR04: roundtrip =>  55.93 mm
+I (24667) HC_SR04: roundtrip =>  55.93 mm
+I (24717) HC_SR04: roundtrip =>  55.93 mm
+I (24767) HC_SR04: roundtrip =>  55.93 mm
+I (24817) HC_SR04: roundtrip =>  55.93 mm
+I (24867) HC_SR04: roundtrip =>  55.25 mm
+I (24917) HC_SR04: roundtrip =>  55.42 mm
+I (24967) MAIN: 
+I (24967) HC_SR04: roundtrip =>  55.76 mm, discarded     
+I (25017) HC_SR04: roundtrip =>  55.42 mm
+I (25067) HC_SR04: roundtrip =>  55.93 mm
+I (25117) HC_SR04: roundtrip =>  55.93 mm
+I (25167) HC_SR04: roundtrip =>  55.93 mm
+I (25217) HC_SR04: roundtrip =>  55.93 mm
+I (25267) HC_SR04: roundtrip =>  55.93 mm
+I (25317) HC_SR04: roundtrip =>  55.93 mm
+I (25367) HC_SR04: roundtrip =>  55.93 mm
+I (25417) HC_SR04: roundtrip =>  55.25 mm
+I (25467) HC_SR04: roundtrip =>  55.42 mm
+I (25517) HC_SR04: roundtrip =>  55.93 mm
+I (25567) HC_SR04: roundtrip =>  55.93 mm
+I (25617) HC_SR04: roundtrip =>  55.93 mm
+I (25667) HC_SR04: roundtrip =>  55.93 mm
+I (25717) HC_SR04: roundtrip =>  55.93 mm
+I (25767) HC_SR04: roundtrip =>  55.93 mm
+I (25817) HC_SR04: roundtrip =>  55.93 mm
+I (25867) HC_SR04: roundtrip =>  55.25 mm
+I (25917) HC_SR04: roundtrip => 273.19 mm
+I (25967) HC_SR04: roundtrip => 178.33 mm
+I (26017) HC_SR04: roundtrip =>  20.91 mm
+I (26067) HC_SR04: roundtrip =>  32.64 mm
+I (26117) HC_SR04: roundtrip =>  35.19 mm
+I (26167) HC_SR04: roundtrip =>  32.64 mm
+I (26217) HC_SR04: roundtrip =>  40.97 mm
+I (26267) HC_SR04: roundtrip =>  35.19 mm
+I (26317) HC_SR04: roundtrip =>  35.19 mm
+I (26367) HC_SR04: roundtrip =>  35.19 mm
+I (26417) HC_SR04: roundtrip =>  34.51 mm
+I (26467) HC_SR04: roundtrip =>  35.36 mm
+I (26517) HC_SR04: roundtrip =>  35.19 mm
+I (26567) HC_SR04: roundtrip =>  35.19 mm
+I (26617) HC_SR04: roundtrip =>  35.19 mm
+I (26667) HC_SR04: roundtrip =>  35.19 mm
+I (26717) HC_SR04: roundtrip =>  35.19 mm
+I (26767) HC_SR04: roundtrip =>  35.19 mm
+I (26817) HC_SR04: roundtrip =>  35.19 mm
+I (26867) HC_SR04: roundtrip =>  35.19 mm
+W (26867) MAIN: Mail detected!
+I (26867) MAIN:
+I (26867) HC_SR04: roundtrip =>  35.53 mm, discarded     
+I (26917) HC_SR04: roundtrip =>  35.19 mm
+I (26967) HC_SR04: roundtrip =>  35.19 mm
+I (27017) HC_SR04: roundtrip =>  35.19 mm
+I (27067) HC_SR04: roundtrip =>  35.19 mm
+I (27117) HC_SR04: roundtrip =>  35.19 mm
+I (27167) HC_SR04: roundtrip =>  35.19 mm
+I (27217) HC_SR04: roundtrip =>  35.19 mm
+I (27267) HC_SR04: roundtrip =>  35.19 mm
+I (27317) HC_SR04: roundtrip =>  35.19 mm
+I (27367) HC_SR04: roundtrip =>  35.19 mm
+I (27417) HC_SR04: roundtrip =>  35.02 mm
+I (27467) HC_SR04: roundtrip =>  35.36 mm
+I (27517) HC_SR04: roundtrip =>  35.19 mm
+I (27567) HC_SR04: roundtrip =>  35.19 mm
+I (27617) HC_SR04: roundtrip =>  35.19 mm
+I (27667) HC_SR04: roundtrip =>  35.19 mm
+I (27717) HC_SR04: roundtrip =>  35.19 mm
+I (27767) HC_SR04: roundtrip =>  35.19 mm
+I (27817) HC_SR04: roundtrip =>  35.19 mm
+I (27867) HC_SR04: roundtrip =>  34.85 mm
+I (27867) MAIN:
+I (27867) HC_SR04: roundtrip =>  34.85 mm, discarded
+I (27917) HC_SR04: roundtrip =>  35.19 mm
+I (27967) HC_SR04: roundtrip =>  35.36 mm
+I (28017) HC_SR04: roundtrip =>  35.19 mm
+I (28067) HC_SR04: roundtrip =>  35.19 mm
+I (28117) HC_SR04: roundtrip =>  35.19 mm
+I (28167) HC_SR04: roundtrip =>  35.19 mm
+I (28217) HC_SR04: roundtrip =>  35.19 mm
+I (28267) HC_SR04: roundtrip =>  35.19 mm
+I (28317) HC_SR04: roundtrip =>  35.19 mm
+I (28367) HC_SR04: roundtrip =>  35.19 mm
+I (28417) HC_SR04: roundtrip =>  35.19 mm
+I (28467) HC_SR04: roundtrip =>  35.19 mm
+I (28517) HC_SR04: roundtrip =>  35.36 mm
+I (28567) HC_SR04: roundtrip =>  35.19 mm
+I (28617) HC_SR04: roundtrip =>  35.19 mm
+I (28667) HC_SR04: roundtrip =>  35.19 mm
+I (28717) HC_SR04: roundtrip =>  35.19 mm
+I (28767) HC_SR04: roundtrip =>  35.19 mm
+I (28817) HC_SR04: roundtrip =>  35.19 mm
+I (28867) HC_SR04: roundtrip =>  35.19 mm
+I (28867) MAIN: 
+I (28867) HC_SR04: roundtrip =>  26.18 mm, discarded     
+I (28917) HC_SR04: roundtrip =>  35.19 mm
+I (28967) HC_SR04: roundtrip =>  35.19 mm
+I (29017) HC_SR04: roundtrip =>  35.19 mm
+I (29067) HC_SR04: roundtrip =>  46.75 mm
+I (29117) HC_SR04: roundtrip =>  40.97 mm
+I (29167) HC_SR04: roundtrip =>  46.75 mm
+I (29217) HC_SR04: roundtrip =>  64.26 mm
+I (29267) HC_SR04: roundtrip =>  73.44 mm
+I (29317) HC_SR04: roundtrip =>  87.55 mm
+I (29367) HC_SR04: roundtrip => 316.88 mm
+I (29417) HC_SR04: roundtrip => 190.57 mm
+I (29467) HC_SR04: roundtrip => 200.60 mm
+I (29517) HC_SR04: roundtrip => 270.30 mm
+I (29567) HC_SR04: roundtrip => 261.97 mm
+I (29617) HC_SR04: roundtrip => 314.33 mm
+I (29667) HC_SR04: roundtrip => 311.78 mm
+I (29717) HC_SR04: roundtrip => 587.18 mm
+I (29767) HC_SR04: roundtrip => 298.86 mm
+I (29817) HC_SR04: roundtrip => 293.59 mm
+I (29867) HC_SR04: roundtrip => 358.70 mm
+I (29867) MAIN:
+I (29867) HC_SR04: roundtrip => 358.87 mm, discarded     
+I (29917) HC_SR04: roundtrip => 319.60 mm
+I (29967) HC_SR04: roundtrip => 342.55 mm
+I (30017) HC_SR04: roundtrip => 327.25 mm
+I (30067) HC_SR04: roundtrip => 340.34 mm
+I (30117) HC_SR04: roundtrip => 344.76 mm
+I (30167) HC_SR04: roundtrip => 335.07 mm
+I (30217) HC_SR04: roundtrip => 335.07 mm
+I (30267) HC_SR04: roundtrip => 351.90 mm
+I (30317) HC_SR04: roundtrip => 356.49 mm
+I (30367) HC_SR04: roundtrip => 327.25 mm
+I (30417) HC_SR04: roundtrip => 322.15 mm
+I (30467) HC_SR04: roundtrip => 356.49 mm
+I (30517) HC_SR04: roundtrip => 335.41 mm
+I (30567) HC_SR04: roundtrip => 351.90 mm
+I (30617) HC_SR04: roundtrip => 327.25 mm
+I (30667) HC_SR04: roundtrip => 288.49 mm
+I (30717) HC_SR04: roundtrip => 288.49 mm
+I (30767) HC_SR04: roundtrip => 327.25 mm
+I (30817) HC_SR04: roundtrip => 327.25 mm
+I (30867) HC_SR04: roundtrip => 339.66 mm
+I (30867) MAIN:
+I (30867) HC_SR04: roundtrip => 356.66 mm, discarded     
+I (30917) HC_SR04: roundtrip => 477.70 mm
+I (30967) HC_SR04: roundtrip => 344.76 mm
+I (31017) HC_SR04: roundtrip => 532.10 mm
+I (31067) HC_SR04: roundtrip => 452.37 mm
+I (31117) HC_SR04: roundtrip => 408.85 mm
+I (31167) HC_SR04: roundtrip => 532.10 mm
+I (31217) HC_SR04: roundtrip => 365.50 mm
+I (31267) HC_SR04: roundtrip => 370.09 mm
+I (31317) HC_SR04: roundtrip => 162.69 mm
+I (31367) HC_SR04: roundtrip => 150.45 mm
+I (31417) HC_SR04: roundtrip => 181.56 mm
+I (31467) HC_SR04: roundtrip => 428.74 mm
+I (31517) HC_SR04: roundtrip => 210.12 mm
+I (31567) HC_SR04: roundtrip => 291.04 mm
+I (31617) HC_SR04: roundtrip => 351.90 mm
+I (31667) HC_SR04: roundtrip => 224.23 mm
+I (31717) HC_SR04: roundtrip => 286.45 mm
+I (31767) HC_SR04: roundtrip => 286.45 mm
+I (31817) HC_SR04: roundtrip => 250.24 mm
+I (31867) HC_SR04: roundtrip => 200.60 mm
+I (31867) MAIN:
+I (31867) HC_SR04: roundtrip => 204.17 mm, discarded
+I (31917) HC_SR04: roundtrip => 194.48 mm
+I (31967) HC_SR04: roundtrip => 209.61 mm
+I (32017) HC_SR04: roundtrip => 200.94 mm
+I (32067) HC_SR04: roundtrip => 226.95 mm
+I (32117) HC_SR04: roundtrip => 285.94 mm
+I (32167) HC_SR04: roundtrip => 335.07 mm
+I (32217) HC_SR04: roundtrip => 335.07 mm
+I (32267) HC_SR04: roundtrip => 335.07 mm
+I (32317) HC_SR04: roundtrip => 344.76 mm
+I (32367) HC_SR04: roundtrip => 340.34 mm
+I (32417) HC_SR04: roundtrip => 360.40 mm
+I (32467) HC_SR04: roundtrip => 340.34 mm
+I (32517) HC_SR04: roundtrip => 361.25 mm
+I (32567) HC_SR04: roundtrip => 351.90 mm
+I (32617) HC_SR04: roundtrip => 351.90 mm
+I (32667) HC_SR04: roundtrip => 359.04 mm
+I (32717) HC_SR04: roundtrip => 324.70 mm
+I (32767) HC_SR04: roundtrip => 319.60 mm
+I (32817) HC_SR04: roundtrip => 314.33 mm
+I (32867) HC_SR04: roundtrip => 319.60 mm
+I (32867) MAIN:
+I (32867) HC_SR04: roundtrip => 314.67 mm, discarded     
+I (32917) HC_SR04: roundtrip => 412.76 mm
+I (32967) HC_SR04: roundtrip => 278.80 mm
+I (33017) HC_SR04: roundtrip => 256.02 mm
+I (33067) HC_SR04: roundtrip => 221.00 mm
+I (33117) HC_SR04: roundtrip => 210.12 mm
+I (33167) HC_SR04: roundtrip => 210.12 mm
+I (33217) HC_SR04: roundtrip => 114.24 mm
+I (33267) HC_SR04: roundtrip =>  99.28 mm
+I (33317) HC_SR04: roundtrip =>  87.55 mm
+I (33367) HC_SR04: roundtrip =>  90.78 mm
+I (33417) HC_SR04: roundtrip =>  75.99 mm
+I (33467) HC_SR04: roundtrip =>  61.37 mm
+I (33517) HC_SR04: roundtrip =>  61.71 mm
+I (33567) HC_SR04: roundtrip =>  58.48 mm
+I (33617) HC_SR04: roundtrip =>  52.70 mm
+I (33667) HC_SR04: roundtrip =>  55.93 mm
+I (33717) HC_SR04: roundtrip =>  55.93 mm
+I (33767) HC_SR04: roundtrip =>  55.93 mm
+I (33817) HC_SR04: roundtrip =>  55.93 mm
+I (33867) HC_SR04: roundtrip =>  55.59 mm
+I (33917) HC_SR04: roundtrip =>  55.93 mm
+I (33967) MAIN: 
+I (33967) HC_SR04: roundtrip =>  55.76 mm, discarded     
+I (34017) HC_SR04: roundtrip =>  55.42 mm
+I (34067) HC_SR04: roundtrip =>  55.93 mm
+I (34117) HC_SR04: roundtrip =>  55.93 mm
+I (34167) HC_SR04: roundtrip =>  55.93 mm
+I (34217) HC_SR04: roundtrip =>  55.93 mm
+I (34267) HC_SR04: roundtrip =>  55.93 mm
+I (34317) HC_SR04: roundtrip =>  55.93 mm
+I (34367) HC_SR04: roundtrip =>  55.93 mm
+I (34417) HC_SR04: roundtrip =>  55.25 mm
+I (34467) HC_SR04: roundtrip =>  55.42 mm
+I (34517) HC_SR04: roundtrip =>  55.93 mm
+I (34567) HC_SR04: roundtrip =>  55.93 mm
+I (34617) HC_SR04: roundtrip =>  55.93 mm
+I (34667) HC_SR04: roundtrip =>  55.93 mm
+I (34717) HC_SR04: roundtrip =>  55.93 mm
+I (34767) HC_SR04: roundtrip =>  55.93 mm
+I (34817) HC_SR04: roundtrip =>  55.93 mm
+I (34867) HC_SR04: roundtrip =>  55.25 mm
+I (34917) HC_SR04: roundtrip =>  55.42 mm
+I (34967) HC_SR04: roundtrip =>  55.93 mm
+I (35017) HC_SR04: roundtrip =>  55.93 mm
+I (35067) MAIN: 
+I (35067) HC_SR04: roundtrip =>  55.59 mm, discarded     
+I (35117) HC_SR04: roundtrip =>  55.42 mm
+I (35167) HC_SR04: roundtrip =>  55.93 mm
+I (35217) HC_SR04: roundtrip =>  55.93 mm
+I (35267) HC_SR04: roundtrip =>  55.93 mm
+I (35317) HC_SR04: roundtrip =>  55.93 mm
+I (35367) HC_SR04: roundtrip =>  55.93 mm
+I (35417) HC_SR04: roundtrip =>  55.25 mm
+I (35467) HC_SR04: roundtrip =>  55.42 mm
+I (35517) HC_SR04: roundtrip =>  55.93 mm
+I (35567) HC_SR04: roundtrip =>  55.93 mm
+I (35617) HC_SR04: roundtrip =>  55.93 mm
+I (35667) HC_SR04: roundtrip =>  55.93 mm
+I (35717) HC_SR04: roundtrip =>  55.93 mm
+I (35767) HC_SR04: roundtrip =>  55.93 mm
+I (35817) HC_SR04: roundtrip =>  55.93 mm
+I (35867) HC_SR04: roundtrip =>  55.25 mm
+I (35917) HC_SR04: roundtrip =>  55.42 mm
+I (35967) HC_SR04: roundtrip =>  55.93 mm
+I (36017) HC_SR04: roundtrip =>  55.93 mm
+I (36067) HC_SR04: roundtrip =>  55.93 mm
+I (36117) HC_SR04: roundtrip =>  55.93 mm
+I (36167) MAIN: 
+I (36167) HC_SR04: roundtrip =>  55.76 mm, discarded     
+I (36217) HC_SR04: roundtrip =>  55.42 mm
+I (36267) HC_SR04: roundtrip =>  55.93 mm
+I (36317) HC_SR04: roundtrip =>  55.93 mm
+I (36367) HC_SR04: roundtrip =>  55.93 mm
+I (36417) HC_SR04: roundtrip =>  55.25 mm
+I (36467) HC_SR04: roundtrip =>  55.42 mm
+I (36517) HC_SR04: roundtrip =>  55.93 mm
+I (36567) HC_SR04: roundtrip =>  40.97 mm
+I (36617) HC_SR04: roundtrip =>  40.97 mm
+I (36667) HC_SR04: roundtrip =>  46.75 mm
+I (36717) HC_SR04: roundtrip =>  32.64 mm
+I (36767) HC_SR04: roundtrip =>  38.42 mm
+I (36817) HC_SR04: roundtrip =>  23.46 mm
+I (36867) HC_SR04: roundtrip => 158.95 mm
+I (36917) HC_SR04: roundtrip =>  26.35 mm
+I (36967) HC_SR04: roundtrip =>  20.91 mm
+I (37017) HC_SR04: roundtrip =>  29.24 mm
+I (37067) HC_SR04: roundtrip =>  32.64 mm
+I (37117) HC_SR04: roundtrip =>  23.46 mm
+I (37167) HC_SR04: roundtrip =>  67.49 mm
+I (37217) HC_SR04: roundtrip =>  38.42 mm
+I (37267) HC_SR04: roundtrip =>  58.48 mm
+I (37317) HC_SR04: roundtrip =>  49.98 mm
+I (37367) HC_SR04: roundtrip =>  58.48 mm
+I (37417) HC_SR04: roundtrip =>  31.79 mm
+I (37467) HC_SR04: roundtrip =>  32.13 mm
+I (37517) HC_SR04: roundtrip =>  49.98 mm
+W (37517) MAIN: Mail detected!
+I (37517) MAIN:
+I (37517) HC_SR04: roundtrip =>  32.47 mm, discarded     
+I (37567) HC_SR04: roundtrip =>  41.31 mm
+I (37617) HC_SR04: roundtrip =>  32.64 mm
+I (37667) HC_SR04: roundtrip =>  32.64 mm
+I (37717) HC_SR04: roundtrip =>  32.64 mm
+I (37767) HC_SR04: roundtrip =>  49.98 mm
+I (37817) HC_SR04: roundtrip =>  32.64 mm
+I (37867) HC_SR04: roundtrip =>  31.96 mm
+I (37917) HC_SR04: roundtrip =>  32.13 mm
+I (37967) HC_SR04: roundtrip =>  32.64 mm
+I (38017) HC_SR04: roundtrip =>  32.64 mm
+I (38067) HC_SR04: roundtrip =>  32.64 mm
+I (38117) HC_SR04: roundtrip =>  32.64 mm
+I (38167) HC_SR04: roundtrip =>  32.64 mm
+I (38217) HC_SR04: roundtrip =>  32.64 mm
+I (38267) HC_SR04: roundtrip =>  32.64 mm
+I (38317) HC_SR04: roundtrip =>  32.64 mm
+I (38367) HC_SR04: roundtrip =>  32.64 mm
+I (38417) HC_SR04: roundtrip =>  31.79 mm
+I (38467) HC_SR04: roundtrip =>  32.13 mm
+I (38517) HC_SR04: roundtrip =>  32.64 mm
+I (38517) MAIN:
+I (38517) HC_SR04: roundtrip =>  41.31 mm, discarded
+I (38567) HC_SR04: roundtrip =>  32.13 mm
+I (38617) HC_SR04: roundtrip =>  32.64 mm
+I (38667) HC_SR04: roundtrip =>  32.64 mm
+I (38717) HC_SR04: roundtrip =>  32.64 mm
+I (38767) HC_SR04: roundtrip =>  32.64 mm
+I (38817) HC_SR04: roundtrip =>  32.64 mm
+I (38867) HC_SR04: roundtrip =>  31.96 mm
+I (38917) HC_SR04: roundtrip =>  32.13 mm
+I (38967) HC_SR04: roundtrip =>  32.64 mm
+I (39017) HC_SR04: roundtrip =>  32.64 mm
+I (39067) HC_SR04: roundtrip =>  32.64 mm
+I (39117) HC_SR04: roundtrip =>  23.46 mm
+I (39167) HC_SR04: roundtrip =>  32.64 mm
+I (39217) HC_SR04: roundtrip =>  32.64 mm
+I (39267) HC_SR04: roundtrip =>  32.64 mm
+I (39317) HC_SR04: roundtrip =>  23.46 mm
+I (39367) HC_SR04: roundtrip =>  23.46 mm
+I (39417) HC_SR04: roundtrip =>  23.46 mm
+I (39467) HC_SR04: roundtrip =>  23.80 mm
+I (39517) HC_SR04: roundtrip =>  23.46 mm
+I (39517) MAIN:
+I (39517) HC_SR04: roundtrip =>  32.47 mm, discarded     
+I (39567) HC_SR04: roundtrip =>  32.13 mm
+I (39617) HC_SR04: roundtrip =>  23.46 mm
+I (39667) HC_SR04: roundtrip =>  23.46 mm
+I (39717) HC_SR04: roundtrip =>  23.46 mm
+I (39767) HC_SR04: roundtrip =>  32.64 mm
+I (39817) HC_SR04: roundtrip =>  23.46 mm
+I (39867) HC_SR04: roundtrip =>  23.46 mm
+I (39917) HC_SR04: roundtrip =>  32.13 mm
+I (39967) HC_SR04: roundtrip =>  23.46 mm
+I (40017) HC_SR04: roundtrip =>  23.46 mm
+I (40067) HC_SR04: roundtrip =>  23.46 mm
+I (40117) HC_SR04: roundtrip =>  23.46 mm
+I (40167) HC_SR04: roundtrip =>  32.64 mm
+I (40217) HC_SR04: roundtrip =>  23.46 mm
+I (40267) HC_SR04: roundtrip =>  23.46 mm
+I (40317) HC_SR04: roundtrip =>  23.46 mm
+I (40367) HC_SR04: roundtrip =>  23.46 mm
+I (40417) HC_SR04: roundtrip =>  23.46 mm
+I (40467) HC_SR04: roundtrip =>  23.80 mm
+I (40517) HC_SR04: roundtrip =>  23.46 mm
+I (40517) MAIN:
+I (40517) HC_SR04: roundtrip =>  32.47 mm, discarded     
+I (40567) HC_SR04: roundtrip =>  23.80 mm
+I (40617) HC_SR04: roundtrip =>  23.46 mm
+I (40667) HC_SR04: roundtrip =>  23.46 mm
+I (40717) HC_SR04: roundtrip =>  23.46 mm
+I (40767) HC_SR04: roundtrip =>  23.46 mm
+I (40817) HC_SR04: roundtrip =>  23.46 mm
+I (40867) HC_SR04: roundtrip =>  23.46 mm
+I (40917) HC_SR04: roundtrip =>  23.80 mm
+I (40967) HC_SR04: roundtrip =>  23.46 mm
+I (41017) HC_SR04: roundtrip =>  23.46 mm
+I (41067) HC_SR04: roundtrip =>  23.46 mm
+I (41117) HC_SR04: roundtrip =>  23.46 mm
+I (41167) HC_SR04: roundtrip =>  23.46 mm
+I (41217) HC_SR04: roundtrip =>  23.46 mm
+I (41267) HC_SR04: roundtrip =>  23.46 mm
+I (41317) HC_SR04: roundtrip =>  23.46 mm
+I (41367) HC_SR04: roundtrip =>  23.46 mm
+I (41417) HC_SR04: roundtrip =>  23.46 mm
+I (41467) HC_SR04: roundtrip =>  23.80 mm
+I (41517) HC_SR04: roundtrip =>  23.46 mm
+I (41517) MAIN:
+I (41517) HC_SR04: roundtrip =>  32.47 mm, discarded     
+I (41567) HC_SR04: roundtrip =>  23.80 mm
+I (41617) HC_SR04: roundtrip =>  32.64 mm
+I (41667) HC_SR04: roundtrip =>  58.48 mm
+I (41717) HC_SR04: roundtrip =>  67.49 mm
+I (41767) HC_SR04: roundtrip =>  38.42 mm
+I (41817) HC_SR04: roundtrip =>  38.42 mm
+I (41867) HC_SR04: roundtrip =>  49.47 mm
+I (41917) HC_SR04: roundtrip =>  23.80 mm
+I (41967) HC_SR04: roundtrip =>  23.46 mm
+I (42017) HC_SR04: roundtrip =>  23.46 mm
+I (42067) HC_SR04: roundtrip =>  23.46 mm
+I (42117) HC_SR04: roundtrip =>  23.46 mm
+I (42167) HC_SR04: roundtrip =>  23.46 mm
+I (42217) HC_SR04: roundtrip =>  23.46 mm
+I (42267) HC_SR04: roundtrip =>  23.46 mm
+I (42317) HC_SR04: roundtrip =>  23.46 mm
+I (42367) HC_SR04: roundtrip =>  23.46 mm
+I (42417) HC_SR04: roundtrip =>  31.79 mm
+I (42467) HC_SR04: roundtrip =>  52.87 mm
+I (42517) HC_SR04: roundtrip =>  35.19 mm
+I (42517) MAIN:
+I (42517) HC_SR04: roundtrip =>  34.85 mm, discarded
+I (42567) HC_SR04: roundtrip =>  52.87 mm
+I (42617) HC_SR04: roundtrip =>  52.70 mm
+I (42667) HC_SR04: roundtrip =>  52.70 mm
+I (42717) HC_SR04: roundtrip =>  52.70 mm
+I (42767) HC_SR04: roundtrip =>  52.70 mm
+I (42817) HC_SR04: roundtrip =>  52.70 mm
+I (42867) HC_SR04: roundtrip =>  52.70 mm
+I (42917) HC_SR04: roundtrip =>  52.87 mm
+I (42967) HC_SR04: roundtrip =>  35.19 mm
+I (43017) HC_SR04: roundtrip =>  35.19 mm
+I (43067) HC_SR04: roundtrip =>  35.19 mm
+I (43117) HC_SR04: roundtrip =>  35.19 mm
+I (43167) HC_SR04: roundtrip =>  35.19 mm
+I (43217) HC_SR04: roundtrip =>  35.19 mm
+I (43267) HC_SR04: roundtrip =>  23.46 mm
+I (43317) HC_SR04: roundtrip =>  20.91 mm
+I (43367) HC_SR04: roundtrip =>  35.19 mm
+I (43417) HC_SR04: roundtrip =>  43.52 mm
+I (43467) HC_SR04: roundtrip =>  96.39 mm
+I (43517) HC_SR04: roundtrip => 120.02 mm
+I (43517) MAIN:
+I (43517) HC_SR04: roundtrip => 143.82 mm, discarded
+I (43567) HC_SR04: roundtrip => 172.04 mm
+I (43617) HC_SR04: roundtrip => 200.94 mm
+I (43667) HC_SR04: roundtrip => 288.49 mm
+I (43717) HC_SR04: roundtrip => 347.31 mm
+I (43767) HC_SR04: roundtrip => 299.54 mm
+I (43817) HC_SR04: roundtrip => 283.22 mm
+I (43867) HC_SR04: roundtrip => 351.22 mm
+I (43917) HC_SR04: roundtrip => 319.77 mm
+I (43967) HC_SR04: roundtrip => 335.07 mm
+I (44017) HC_SR04: roundtrip => 293.59 mm
+I (44067) HC_SR04: roundtrip => 264.52 mm
+I (44117) HC_SR04: roundtrip => 390.83 mm
+I (44167) HC_SR04: roundtrip => 351.90 mm
+I (44217) HC_SR04: roundtrip => 301.41 mm
+I (44267) HC_SR04: roundtrip => 340.34 mm
+I (44317) HC_SR04: roundtrip => 340.34 mm
+I (44367) HC_SR04: roundtrip => 351.90 mm
+I (44417) HC_SR04: roundtrip => 339.49 mm
+I (44467) HC_SR04: roundtrip => 356.83 mm
+I (44517) HC_SR04: roundtrip => 356.49 mm
+I (44517) MAIN:
+I (44517) HC_SR04: roundtrip => 356.32 mm, discarded     
+I (44567) HC_SR04: roundtrip => 352.24 mm
+I (44617) HC_SR04: roundtrip => 351.90 mm
+I (44667) HC_SR04: roundtrip => 347.31 mm
+I (44717) HC_SR04: roundtrip => 351.90 mm
+I (44767) HC_SR04: roundtrip => 335.07 mm
+I (44817) HC_SR04: roundtrip => 342.89 mm
+I (44867) HC_SR04: roundtrip => 342.21 mm
+I (44917) HC_SR04: roundtrip => 406.64 mm
+I (44967) HC_SR04: roundtrip => 351.90 mm
+I (45017) HC_SR04: roundtrip => 303.96 mm
+I (45067) HC_SR04: roundtrip => 298.86 mm
+I (45117) HC_SR04: roundtrip => 283.22 mm
+I (45167) HC_SR04: roundtrip => 281.35 mm
+I (45217) HC_SR04: roundtrip => 285.94 mm
+I (45267) HC_SR04: roundtrip => 149.77 mm
+I (45317) HC_SR04: roundtrip => 114.24 mm
+I (45367) HC_SR04: roundtrip => 149.77 mm
+I (45417) HC_SR04: roundtrip =>  96.05 mm
+I (45467) HC_SR04: roundtrip =>  84.66 mm
+I (45517) HC_SR04: roundtrip =>  79.22 mm
+I (45517) MAIN:
+I (45517) HC_SR04: roundtrip =>  79.05 mm, discarded
+I (45567) HC_SR04: roundtrip =>  72.93 mm
+I (45617) HC_SR04: roundtrip =>  64.26 mm
+I (45667) HC_SR04: roundtrip =>  70.21 mm
+I (45717) HC_SR04: roundtrip =>  58.48 mm
+I (45767) HC_SR04: roundtrip =>  64.26 mm
+I (45817) HC_SR04: roundtrip =>  61.71 mm
+I (45867) HC_SR04: roundtrip =>  55.25 mm
+I (45917) HC_SR04: roundtrip =>  55.42 mm
+I (45967) HC_SR04: roundtrip =>  55.93 mm
+I (46017) HC_SR04: roundtrip =>  55.93 mm
+I (46067) HC_SR04: roundtrip =>  55.93 mm
+I (46117) HC_SR04: roundtrip =>  55.93 mm
+I (46167) HC_SR04: roundtrip =>  55.93 mm
+I (46217) HC_SR04: roundtrip =>  55.93 mm
+I (46267) HC_SR04: roundtrip =>  55.93 mm
+I (46317) HC_SR04: roundtrip =>  55.93 mm
+I (46367) HC_SR04: roundtrip =>  55.93 mm
+I (46417) HC_SR04: roundtrip =>  55.08 mm
+I (46467) HC_SR04: roundtrip =>  55.42 mm
+I (46517) HC_SR04: roundtrip =>  55.93 mm
+I (46567) HC_SR04: roundtrip =>  55.93 mm
+I (46617) MAIN: 
+I (46617) HC_SR04: roundtrip =>  55.59 mm, discarded     
+I (46667) HC_SR04: roundtrip =>  55.42 mm
+I (46717) HC_SR04: roundtrip =>  55.93 mm
+I (46767) HC_SR04: roundtrip =>  55.93 mm
+I (46817) HC_SR04: roundtrip =>  55.93 mm
+I (46867) HC_SR04: roundtrip =>  55.25 mm
+I (46917) HC_SR04: roundtrip =>  55.42 mm
+I (46967) HC_SR04: roundtrip =>  55.93 mm
+I (47017) HC_SR04: roundtrip =>  55.93 mm
+I (47067) HC_SR04: roundtrip =>  55.93 mm
+I (47117) HC_SR04: roundtrip =>  55.93 mm
+I (47167) HC_SR04: roundtrip =>  55.93 mm
+I (47217) HC_SR04: roundtrip =>  55.93 mm
+I (47267) HC_SR04: roundtrip =>  55.93 mm
+I (47317) HC_SR04: roundtrip =>  55.93 mm
+I (47367) HC_SR04: roundtrip =>  55.93 mm
+I (47417) HC_SR04: roundtrip =>  55.08 mm
+I (47467) HC_SR04: roundtrip =>  55.42 mm
+I (47517) HC_SR04: roundtrip =>  55.93 mm
+I (47567) HC_SR04: roundtrip =>  55.93 mm
+I (47617) HC_SR04: roundtrip =>  55.93 mm
+I (47667) HC_SR04: roundtrip =>  55.93 mm
+I (47717) MAIN: 
+I (47717) HC_SR04: roundtrip =>  55.59 mm, discarded     
+I (47767) HC_SR04: roundtrip =>  55.42 mm
+I (47817) HC_SR04: roundtrip =>  55.93 mm
+I (47867) HC_SR04: roundtrip =>  55.25 mm
+I (47917) HC_SR04: roundtrip =>  55.42 mm
+I (47967) HC_SR04: roundtrip =>  55.93 mm
+I (48017) HC_SR04: roundtrip =>  55.93 mm
+I (48067) HC_SR04: roundtrip =>  55.93 mm
+I (48117) HC_SR04: roundtrip =>  55.93 mm
+I (48167) HC_SR04: roundtrip =>  55.93 mm
+I (48217) HC_SR04: roundtrip =>  55.93 mm
+I (48267) HC_SR04: roundtrip =>  55.93 mm
+I (48317) HC_SR04: roundtrip =>  55.93 mm
+I (48367) HC_SR04: roundtrip =>  55.93 mm
+I (48417) HC_SR04: roundtrip =>  55.08 mm
+I (48467) HC_SR04: roundtrip =>  55.42 mm
+I (48517) HC_SR04: roundtrip =>  55.93 mm
+I (48567) HC_SR04: roundtrip =>  55.93 mm
+I (48617) HC_SR04: roundtrip =>  55.93 mm
+I (48667) HC_SR04: roundtrip =>  55.93 mm
+I (48717) HC_SR04: roundtrip =>  55.93 mm
+I (48767) HC_SR04: roundtrip =>  55.93 mm
+I (48817) MAIN: 
+I (48817) HC_SR04: roundtrip =>  55.59 mm, discarded     
+I (48867) HC_SR04: roundtrip =>  55.08 mm
+I (48917) HC_SR04: roundtrip =>  55.59 mm
+I (48967) HC_SR04: roundtrip =>  55.93 mm
+I (49017) HC_SR04: roundtrip =>  55.93 mm
+I (49067) HC_SR04: roundtrip =>  55.93 mm
+I (49117) HC_SR04: roundtrip =>  55.93 mm
+I (49167) HC_SR04: roundtrip =>  55.93 mm
+I (49217) HC_SR04: roundtrip =>  55.93 mm
+I (49267) HC_SR04: roundtrip =>  55.93 mm
+I (49317) HC_SR04: roundtrip =>  55.93 mm
+I (49367) HC_SR04: roundtrip =>  20.91 mm
+I (49417) HC_SR04: roundtrip =>  37.57 mm
+I (49467) HC_SR04: roundtrip => 545.36 mm
+I (49517) HC_SR04: roundtrip =>  61.71 mm
+I (49567) HC_SR04: roundtrip => 552.16 mm
+I (49617) HC_SR04: roundtrip => 462.74 mm
+I (49667) HC_SR04: roundtrip =>  85.00 mm
+I (49717) HC_SR04: roundtrip =>  32.64 mm
+I (49767) HC_SR04: roundtrip =>  38.42 mm
+I (49817) HC_SR04: roundtrip =>  58.48 mm
+I (49867) HC_SR04: roundtrip =>  35.02 mm
+I (49917) HC_SR04: roundtrip =>  35.36 mm
+I (49967) HC_SR04: roundtrip =>  20.91 mm
+I (50017) HC_SR04: roundtrip =>  38.42 mm
+I (50067) HC_SR04: roundtrip =>  26.69 mm
+I (50117) HC_SR04: roundtrip =>  20.91 mm
+I (50167) HC_SR04: roundtrip =>  20.91 mm
+I (50217) HC_SR04: roundtrip =>  20.91 mm
+I (50267) HC_SR04: roundtrip =>  29.24 mm
+I (50317) HC_SR04: roundtrip =>  20.91 mm
+W (50317) MAIN: Mail detected!
+I (50317) MAIN:
+I (50317) HC_SR04: roundtrip =>  29.24 mm, discarded     
+I (50367) HC_SR04: roundtrip =>  20.57 mm
+I (50417) HC_SR04: roundtrip =>  20.57 mm
+I (50467) HC_SR04: roundtrip =>  20.74 mm
+I (50517) HC_SR04: roundtrip =>  20.91 mm
+I (50567) HC_SR04: roundtrip =>  20.91 mm
+I (50617) HC_SR04: roundtrip =>  20.91 mm
+I (50667) HC_SR04: roundtrip =>  20.91 mm
+I (50717) HC_SR04: roundtrip =>  20.91 mm
+I (50767) HC_SR04: roundtrip =>  20.91 mm
+I (50817) HC_SR04: roundtrip =>  20.91 mm
+I (50867) HC_SR04: roundtrip =>  20.57 mm
+I (50917) HC_SR04: roundtrip =>  20.74 mm
+I (50967) HC_SR04: roundtrip =>  20.91 mm
+I (51017) HC_SR04: roundtrip =>  20.91 mm
+I (51067) HC_SR04: roundtrip =>  20.91 mm
+I (51117) HC_SR04: roundtrip =>  20.91 mm
+I (51167) HC_SR04: roundtrip =>  20.91 mm
+I (51217) HC_SR04: roundtrip =>  20.91 mm
+I (51267) HC_SR04: roundtrip =>  20.91 mm
+I (51317) HC_SR04: roundtrip =>  20.91 mm
+I (51317) MAIN:
+I (51317) HC_SR04: roundtrip =>  29.41 mm, discarded     
+I (51367) HC_SR04: roundtrip =>  20.74 mm
+I (51417) HC_SR04: roundtrip =>  20.57 mm
+I (51467) HC_SR04: roundtrip =>  20.57 mm
+I (51517) HC_SR04: roundtrip =>  20.91 mm
+I (51567) HC_SR04: roundtrip =>  20.57 mm
+I (51617) HC_SR04: roundtrip =>  20.91 mm
+I (51667) HC_SR04: roundtrip =>  20.91 mm
+I (51717) HC_SR04: roundtrip =>  20.91 mm
+I (51767) HC_SR04: roundtrip =>  20.91 mm
+I (51817) HC_SR04: roundtrip =>  20.91 mm
+I (51867) HC_SR04: roundtrip =>  20.57 mm
+I (51917) HC_SR04: roundtrip =>  20.57 mm
+I (51967) HC_SR04: roundtrip =>  20.91 mm
+I (52017) HC_SR04: roundtrip =>  20.57 mm
+I (52067) HC_SR04: roundtrip =>  20.91 mm
+I (52117) HC_SR04: roundtrip =>  20.91 mm
+I (52167) HC_SR04: roundtrip =>  20.91 mm
+I (52217) HC_SR04: roundtrip =>  26.69 mm
+I (52267) HC_SR04: roundtrip =>  26.69 mm
+I (52317) HC_SR04: roundtrip =>  38.42 mm
+I (52317) MAIN:
+I (52317) HC_SR04: roundtrip =>  37.74 mm, discarded     
+I (52367) HC_SR04: roundtrip =>  47.09 mm
+I (52417) HC_SR04: roundtrip =>  61.37 mm
+I (52467) HC_SR04: roundtrip =>  73.27 mm
+I (52517) HC_SR04: roundtrip =>  81.77 mm
+I (52567) HC_SR04: roundtrip => 275.57 mm
+I (52617) HC_SR04: roundtrip => 226.95 mm
+I (52667) HC_SR04: roundtrip => 351.90 mm
+I (52717) HC_SR04: roundtrip => 218.45 mm
+I (52767) HC_SR04: roundtrip => 232.73 mm
+I (52817) HC_SR04: roundtrip => 256.02 mm
+I (52867) HC_SR04: roundtrip => 342.55 mm
+I (52917) HC_SR04: roundtrip => 410.72 mm
+I (52967) HC_SR04: roundtrip => 303.96 mm
+I (53017) HC_SR04: roundtrip => 332.52 mm
+I (53067) HC_SR04: roundtrip => 291.04 mm
+I (53117) HC_SR04: roundtrip => 306.51 mm
+I (53167) HC_SR04: roundtrip => 442.68 mm
+I (53217) HC_SR04: roundtrip => 359.04 mm
+I (53267) HC_SR04: roundtrip => 301.41 mm
+I (53317) HC_SR04: roundtrip => 309.23 mm
+I (53317) MAIN:
+I (53317) HC_SR04: roundtrip => 322.15 mm, discarded     
+I (53367) HC_SR04: roundtrip => 321.98 mm
+I (53417) HC_SR04: roundtrip => 313.99 mm
+I (53467) HC_SR04: roundtrip => 312.12 mm
+I (53517) HC_SR04: roundtrip => 322.15 mm
+I (53567) HC_SR04: roundtrip => 322.49 mm
+I (53617) HC_SR04: roundtrip => 356.49 mm
+I (53667) HC_SR04: roundtrip => 344.76 mm
+I (53717) HC_SR04: roundtrip => 298.86 mm
+I (53767) HC_SR04: roundtrip => 424.49 mm
+I (53817) HC_SR04: roundtrip => 314.33 mm
+I (53867) HC_SR04: roundtrip => 344.42 mm
+I (53917) HC_SR04: roundtrip => 340.00 mm
+I (53967) HC_SR04: roundtrip => 344.76 mm
+I (54017) HC_SR04: roundtrip => 327.59 mm
+I (54067) HC_SR04: roundtrip => 306.51 mm
+I (54117) HC_SR04: roundtrip => 283.22 mm
+I (54167) HC_SR04: roundtrip => 285.94 mm
+I (54217) HC_SR04: roundtrip => 361.08 mm
+I (54267) HC_SR04: roundtrip => 356.49 mm
+I (54317) HC_SR04: roundtrip => 306.51 mm
+I (54317) MAIN:
+I (54317) HC_SR04: roundtrip => 280.84 mm, discarded     
+I (54367) HC_SR04: roundtrip => 345.10 mm
+I (54417) HC_SR04: roundtrip => 550.46 mm
+I (54467) HC_SR04: roundtrip => 215.73 mm
+I (54517) HC_SR04: roundtrip => 197.71 mm
+I (54567) HC_SR04: roundtrip => 206.89 mm
+I (54617) HC_SR04: roundtrip => 361.08 mm
+I (54667) HC_SR04: roundtrip => 361.08 mm
+I (54717) HC_SR04: roundtrip => 365.50 mm
+I (54767) HC_SR04: roundtrip => 349.35 mm
+I (54817) HC_SR04: roundtrip => 178.33 mm
+I (54867) HC_SR04: roundtrip => 360.74 mm
+I (54917) HC_SR04: roundtrip => 521.56 mm
+I (54967) HC_SR04: roundtrip => 410.89 mm
+I (55017) HC_SR04: roundtrip => 526.83 mm
+I (55067) HC_SR04: roundtrip => 488.07 mm
+I (55117) HC_SR04: roundtrip => 412.76 mm
+I (55167) HC_SR04: roundtrip => 153.00 mm
+I (55217) HC_SR04: roundtrip => 434.86 mm
+I (55267) HC_SR04: roundtrip => 410.89 mm
+I (55317) HC_SR04: roundtrip => 361.08 mm
+I (55317) MAIN:
+I (55317) HC_SR04: roundtrip => 340.34 mm, discarded
+I (55367) HC_SR04: roundtrip => 345.44 mm
+I (55417) HC_SR04: roundtrip => 360.57 mm
+I (55467) HC_SR04: roundtrip => 361.25 mm
+I (55517) HC_SR04: roundtrip => 361.08 mm
+I (55567) HC_SR04: roundtrip => 356.83 mm
+I (55617) HC_SR04: roundtrip => 361.08 mm
+I (55667) HC_SR04: roundtrip => 361.08 mm
+I (55717) HC_SR04: roundtrip => 361.08 mm
+I (55767) HC_SR04: roundtrip => 361.08 mm
+I (55817) HC_SR04: roundtrip => 361.08 mm
+I (55867) HC_SR04: roundtrip => 360.74 mm
+I (55917) HC_SR04: roundtrip => 361.25 mm
+I (55967) HC_SR04: roundtrip => 361.08 mm
+I (56017) HC_SR04: roundtrip => 361.25 mm
+I (56067) HC_SR04: roundtrip => 356.49 mm
+I (56117) HC_SR04: roundtrip => 361.08 mm
+I (56167) HC_SR04: roundtrip => 361.08 mm
+I (56217) HC_SR04: roundtrip => 340.34 mm
+I (56267) HC_SR04: roundtrip => 361.08 mm
+I (56317) HC_SR04: roundtrip => 344.76 mm
+I (56317) MAIN:
+I (56317) HC_SR04: roundtrip => 420.75 mm, discarded     
+I (56367) HC_SR04: roundtrip => 428.74 mm
+I (56417) HC_SR04: roundtrip => 319.26 mm
+I (56467) HC_SR04: roundtrip => 294.27 mm
+I (56517) HC_SR04: roundtrip => 283.22 mm
+I (56567) HC_SR04: roundtrip => 286.45 mm
+I (56617) HC_SR04: roundtrip => 258.74 mm
+I (56667) HC_SR04: roundtrip => 146.54 mm
+I (56717) HC_SR04: roundtrip => 131.75 mm
+I (56767) HC_SR04: roundtrip => 114.24 mm
+I (56817) HC_SR04: roundtrip =>  99.28 mm
+I (56867) HC_SR04: roundtrip =>  98.94 mm
+I (56917) HC_SR04: roundtrip => 116.62 mm
+I (56967) HC_SR04: roundtrip =>  99.28 mm
+I (57017) HC_SR04: roundtrip =>  87.55 mm
+I (57067) HC_SR04: roundtrip =>  93.50 mm
+I (57117) HC_SR04: roundtrip =>  96.73 mm
+I (57167) HC_SR04: roundtrip =>  75.99 mm
+I (57217) HC_SR04: roundtrip =>  81.77 mm
+I (57267) HC_SR04: roundtrip =>  85.00 mm
+I (57317) HC_SR04: roundtrip =>  73.44 mm
+I (57317) MAIN:
+I (57317) HC_SR04: roundtrip =>  72.76 mm, discarded     
+I (57367) HC_SR04: roundtrip =>  70.04 mm
+I (57417) HC_SR04: roundtrip =>  67.15 mm
+I (57467) HC_SR04: roundtrip =>  78.88 mm
+I (57517) HC_SR04: roundtrip =>  58.48 mm
+I (57567) HC_SR04: roundtrip =>  64.60 mm
+I (57617) HC_SR04: roundtrip =>  58.48 mm
+I (57667) HC_SR04: roundtrip =>  52.70 mm
+I (57717) HC_SR04: roundtrip =>  61.71 mm
+I (57767) HC_SR04: roundtrip =>  55.93 mm
+I (57817) HC_SR04: roundtrip =>  55.93 mm
+I (57867) HC_SR04: roundtrip =>  55.59 mm
+I (57917) HC_SR04: roundtrip =>  55.59 mm
+I (57967) HC_SR04: roundtrip =>  55.93 mm
