@@ -1,7 +1,5 @@
-# Smart Mailbox System
+# Smart mailbox with automatic detection and delivery notification
 
 ## Diploma thesis of Master (graduate) study at FER, University of Zagreb
 
-### An IoT Smart Mailbox system built using an ESP32 microcontroller with the purpose of notifying the user of new mail arrivals using a web application
-
-The system supports an HC-SR04 ultrasonic sensor or a custom infrared sensor for detecting the presence of mail. Features include Wi-Fi network connectivity and provisioning via Wi-Fi Easy Connect (DPP). System management and user notifications are handled through a web application. The system is power-efficient when powered by a battery and supports deep sleep mode.
+In this thesis a smart mailbox system with automatic detection and notification of received package was developed. The system is based on the ESP32 microcontroller and uses an ultrasonic or infrared sensor for automatic package detection. Notification of received package via push notifications is enabled by means of Wi‑Fi connectivity and through a custom developed web application. The use of low power consumption modes and battery status notifications ensures long term battery‑powered autonomous system operation. The development process included hardware prototype assembly, embedded system firmware development, web application development, and the integration of all system components. Implemented functionality, sensor characteristics, and energy consumption were experimentally tested.
